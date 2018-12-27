@@ -1,7 +1,21 @@
 package fr.SAR.projet.producteurConsommateur;
+
+
 import java.util.*;
 import java.net.*;
 import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Scanner;
+import java.lang.Thread.*;
+
+import static java.lang.Thread.sleep;
+
 
 public class Consommateur {
     private int N;
@@ -24,7 +38,7 @@ public class Consommateur {
         Socket ssv=null;
         final PrintWriter out;
         BufferedReader in;
-        final Consommateur consommateur=new Consommateur(10);
+        final Consommateur consommateur=new Consommateur(5);
 
         try{
             InetAddress test = InetAddress.getByName("25.46.150.102");// ne fait pas partie du tp
@@ -40,7 +54,7 @@ public class Consommateur {
             Thread consommer=new Thread() {
                 @Override
                 public void run() {
-                    while(consommateur.NbmessC>0){
+                    if (consommateur.NbmessC>0){
                         System.out.println("Je reçois le message: "+consommateur.T[consommateur.outc]);
                         consommateur.outc=(consommateur.outc+1)%consommateur.N;
                         consommateur.NbmessC--;
@@ -48,12 +62,17 @@ public class Consommateur {
                     }
                 }
             };
-            consommer.start();
+
             while (true) {
 
                 String req = in.readLine();
                 System.out.println(req);
                 consommateur.sur_Reception_De(ssv.getInetAddress(),req);
+                try {
+                    consommer.start();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }
 
 
@@ -67,6 +86,7 @@ public class Consommateur {
             T[inc] = message;
             inc = (inc + 1) % N;
             NbmessC++;
+            System.out.println("je termine srd");
         } catch(Exception e){
             System.out.println("Erreur SRD Conso");
             e.printStackTrace();

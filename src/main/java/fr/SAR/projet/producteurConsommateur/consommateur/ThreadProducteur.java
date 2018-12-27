@@ -1,5 +1,9 @@
 package fr.SAR.projet.producteurConsommateur.consommateur;
 
+import fr.SAR.projet.message.Jeton;
+import fr.SAR.projet.message.Message;
+import fr.SAR.projet.message.ToSend;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,16 +11,26 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ThreadProducteur extends Thread{
-    public Consommateur serv;
-    public Socket se;
+
+
+
+
+    Socket se;
     String nom;
     BufferedReader in;
     PrintWriter out;
-    public ThreadProducteur(Socket socket, Consommateur consommateur){
+
+
+
+    public ThreadProducteur(Socket socket,String name){
         se = socket;
-        serv = consommateur;
         start();
     }
+
+
+
+
+
 
     @Override
     public void run() {
@@ -26,7 +40,7 @@ public class ThreadProducteur extends Thread{
             String req;
             while(true){
                 req = in.readLine();
-                if(req.equals("Bye")) break;
+                if(req.equals("bye")) break;
             }
         }catch (IOException e){
             System.err.println("Erreur : " +e);
@@ -37,9 +51,5 @@ public class ThreadProducteur extends Thread{
             }
             catch (IOException e){}
         }
-    }
-    public void Envoyer(String s){
-        out.println(s);
-        out.flush();
     }
 }
