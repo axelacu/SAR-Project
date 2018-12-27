@@ -62,12 +62,6 @@ public class Consommateur {
         }
     }
 
-
-
-
-
-
-
     public boolean sur_Reception_De(InetAddress inetAddress,String message){
         try {
             T[inc] = message;
@@ -79,6 +73,4 @@ public class Consommateur {
         }
         return true;
     }
-
-
 }

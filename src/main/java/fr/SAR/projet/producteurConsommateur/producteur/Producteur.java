@@ -43,7 +43,7 @@ public class Producteur extends Thread {
         System.out.println("message envoyé");
     }
     public void attendre(){
-        while(nbCell>0){
+        while(nbCell<0){
             try {
                 sleep(100);
             } catch (InterruptedException e) {
@@ -52,6 +52,7 @@ public class Producteur extends Thread {
         }
     }
     public void surReceptionDe(){
+        System.out.println("Je suis dans sureception");
         String ack = null;
         try {
             ack = in.readLine();
@@ -61,7 +62,10 @@ public class Producteur extends Thread {
         if(ack!= null) {
             if (ack.equals("Ack")) nbCell++;
             System.out.println("Message Ack");
+        }else{
+            System.out.println("Pas d'ackittement.");
         }
+        System.out.println("Je sort de sureception");
     }
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
@@ -77,8 +81,15 @@ public class Producteur extends Thread {
             message = sc.nextLine();
             System.out.println("Fin d'ecriture du message");
             producteur.produire(message);
+
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             producteur.surReceptionDe();
-        }while(message.equals("bye"));
+        }while(!message.equals("bye"));
 
     }
 }
