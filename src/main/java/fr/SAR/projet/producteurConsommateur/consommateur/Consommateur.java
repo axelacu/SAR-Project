@@ -58,7 +58,25 @@ public class Consommateur {
         }
         return true;
     }
+    public void consommer(ToSend toSend){
 
+    }
+    public Runnable callSRD(final ToSend toSend){
+        return new Runnable() {
+            @Override
+            public void run() {
+                Sur_Reception_De(toSend);
+            }
+        };
+    }
+    public Runnable callConsommer(final ToSend toSend){
+        return new Runnable() {
+            @Override
+            public void run() {
+                consommer(toSend);
+            }
+        };
+    }
 
     public static void main (String[] args){
         try {
