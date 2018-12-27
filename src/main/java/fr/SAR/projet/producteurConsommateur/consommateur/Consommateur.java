@@ -59,8 +59,18 @@ public class Consommateur {
         return true;
     }
     public void consommer(ToSend toSend){
+        while(NbMess>0) {
+            synchronized (monitorOutC) {
+                System.out.println(T[outc]);
+                outc = (outc + 1) % N;
+                NbMess--;
+                NbCell++;
+            }
 
+        }
     }
+
+
     public Runnable callSRD(final ToSend toSend){
         return new Runnable() {
             @Override
