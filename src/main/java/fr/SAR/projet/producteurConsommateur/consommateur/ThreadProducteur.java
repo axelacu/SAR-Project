@@ -7,8 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ThreadProducteur extends Thread{
-    Consommateur serv;
-    Socket se;
+    public Consommateur serv;
+    public Socket se;
     String nom;
     BufferedReader in;
     PrintWriter out;
@@ -26,7 +26,7 @@ public class ThreadProducteur extends Thread{
             String req;
             while(true){
                 req = in.readLine();
-                if(req.equals("bye")) break;
+                if(req.equals("Bye")) break;
             }
         }catch (IOException e){
             System.err.println("Erreur : " +e);
@@ -37,5 +37,9 @@ public class ThreadProducteur extends Thread{
             }
             catch (IOException e){}
         }
+    }
+    public void Envoyer(String s){
+        out.println(s);
+        out.flush();
     }
 }

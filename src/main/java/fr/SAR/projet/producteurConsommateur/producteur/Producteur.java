@@ -89,7 +89,7 @@ public class Producteur extends Thread {
             }
 
             producteur.surReceptionDe();
-        }while(!message.equals("bye"));
+        }while(!message.equals("Bye"));
 
     }
 }
