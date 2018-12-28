@@ -1,95 +1,128 @@
 package fr.SAR.projet.producteurConsommateur.producteur;
 
-import java.io.BufferedReader;
+import fr.SAR.projet.message.Jeton;
+import fr.SAR.projet.message.Message;
+import fr.SAR.projet.message.ToSend;
+import fr.SAR.projet.producteurConsommateur.Consommateur;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Producteur extends Thread {
-    int nbCell;
-    int prod;
-    BufferedReader in;
-    PrintWriter out;
-    Socket socketConsommateur;
+    int N;
+    Message[] tableau;
+    int in ;
+    int out;
+    int nbmess;
+    int nbaut;
+    int temp;
+    int id;
+    Socket consommateur;
+    Socket successeur;
+    OutputStream outConsommateur;
+    OutputStream outSuccesseur;
 
-    public Producteur(String hoteConso, int port,int tailleBuf){
-        nbCell = tailleBuf;
-        InetAddress hote = null;
-        try {
-            hote = InetAddress.getByName(hoteConso);
-        }catch (UnknownHostException e){
-            System.err.println("Machine inconnue :" +e);
-        }
+    public Producteur(){
 
-        try{
-            socketConsommateur = new Socket(hote,port);
-            in = new BufferedReader(new InputStreamReader(socketConsommateur.getInputStream()));
-            out = new PrintWriter(socketConsommateur.getOutputStream(),true);
-        }catch (IOException e){
-            System.err.println("Impossible de creer la socket du client : " +e);
-        }
     }
-    public void produire(String message){
-        attendre();
-        envoyerA(out,message);
-        nbCell--;
+    public Producteur(int N){
+        tableau = new Message[N];
+        in = 0;
+        out = 0;
+        nbmess = 0;
+        nbaut = 0;
+        // TODO : initialiser avec l'identifiant du
     }
-    public void envoyerA(PrintWriter out, String message){
-        out.println(message);
-        System.out.println("message envoyé");
-    }
-    public void attendre(){
-        while(nbCell<0){
-            try {
-                sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    public void surReceptionDe(){
-        System.out.println("Je suis dans sureception");
-        String ack = null;
-        try {
-            ack = in.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if(ack!= null) {
-            if (ack.equals("Ack")) nbCell++;
-            System.out.println("Message Ack");
-        }else{
-            System.out.println("Pas d'ackittement.");
-        }
-        System.out.println("Je sort de sureception");
-    }
-    public static void main(String[] args){
-        Scanner sc = new Scanner(System.in);
-        if(args.length!=2){
-            System.err.println("Bad saisi");
-            System.exit(1);
-        }
-        int port = Integer.parseInt(args[1]);
-        Producteur producteur = new Producteur(args[0],port,5);
-        String message;
-        do{
-            System.out.println("Ecrire message : ");
-            message = sc.nextLine();
-            System.out.println("Fin d'ecriture du message");
-            producteur.produire(message);
 
+    public void produire(Message message){
+        attendre_produir();
+        tableau[in] = message;
+        in = (in + 1) % N;
+        nbmess++;
+    }
+    public  void sur_reception_de(Jeton jeton){
+        temp = Math.min(nbmess-nbaut,jeton.getVal());
+        nbaut += temp;
+        jeton.setVal(jeton.getVal() - temp);
+        envoyer_a(successeur,jeton);
+        //TODO : envoyer via Object outputStream du successeur.
+
+    }
+    public void facteur(){
+        while(true){
+            attendre_facteur();
+            envoyer_a(consommateur, tableau[out]);
+            out = (out + 1) % N;
+            nbaut--;
+            nbmess--;
+        }
+    }
+
+    public void attendre_facteur(){
+        while(!(nbaut>0)){
             try {
                 sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
+    public void attendre_produir(){
+        while(!(nbmess<N)){
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-            producteur.surReceptionDe();
-        }while(!message.equals("Bye"));
 
+    public void envoyer_a(Socket succ, ToSend content){
+        try {
+            ObjectOutputStream objectStream = new ObjectOutputStream(succ.getOutputStream());
+            objectStream.writeObject(content);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setSuccesseur(Socket successeur) {
+        this.successeur = successeur;
+        //TODO : voir si mettre un output stream.
+    }
+
+    public void setConsommateur(Socket consommateur) {
+        this.consommateur = consommateur;
+        //TODO : Verifier si necessaire.
+        /*
+        try {
+            outConsommateur = consommateur.getOutputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+    }
+
+    public static void main(String[] args){
+        InetAddress add = null;
+        try {
+            add = InetAddress.getByName("25.46.130.120");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        try {
+            Socket socket = new Socket(add,4020);
+            Producteur producteur = new Producteur();
+            Jeton jeton = new Jeton(4);
+            producteur.envoyer_a(socket,jeton);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

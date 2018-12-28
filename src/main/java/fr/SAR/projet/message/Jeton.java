@@ -1,6 +1,8 @@
 package fr.SAR.projet.message;
 
-public class Jeton extends ToSend{
+import java.io.Serializable;
+
+public class Jeton extends ToSend {
 
     private int val;
 

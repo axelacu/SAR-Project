@@ -1,6 +1,8 @@
 package fr.SAR.projet.message;
 
-public class Message extends ToSend{
+import java.io.Serializable;
+
+public class Message extends ToSend {
 
     private String message;
 

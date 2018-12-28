@@ -89,12 +89,11 @@ public class Consommateur {
     }
 
     public static void main (String[] args){
+        int port = Integer.parseInt(args[1]);
         try {
-            int port = 4020;
-            InetAddress test = InetAddress.getByName("25.46.150.102");// ne fait pas partie du tp
-            InetSocketAddress val = new InetSocketAddress(test, port);//ne fait pas partie du TP
+            InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(args[0]), port);
             ServerSocket se = new ServerSocket();
-            se.bind(val);
+            se.bind(address);
             int i=0;
             while (true){ //pour ne pas que le serveur se decconnecte
                 Socket soc=se.accept();
