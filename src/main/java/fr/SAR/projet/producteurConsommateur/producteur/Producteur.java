@@ -1,6 +1,6 @@
 package fr.SAR.projet.producteurConsommateur.producteur;
 
-import com.sun.tools.internal.ws.wsdl.document.Input;
+import com.sun.corba.se.pept.encoding.OutputObject;
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
 import fr.SAR.projet.message.ToSend;
@@ -24,8 +24,9 @@ public class Producteur extends Thread {
     Socket consommateur;
     Socket successeur;
     Socket predecesseur;
-    OutputStream outConsommateur;
-    OutputStream outSuccesseur;
+    ObjectOutputStream outOConsommateur;
+    ObjectOutputStream outOSuccesseur;
+    ObjectInputStream inOpredecesseur;
 
     private Object monitorTableau;
 
@@ -53,14 +54,14 @@ public class Producteur extends Thread {
         temp = Math.min(nbmess-nbaut,jeton.getVal());
         nbaut += temp;
         jeton.setVal(jeton.getVal() - temp);
-        envoyer_a(successeur,jeton);
+        envoyer_a(outOSuccesseur,jeton);
         System.out.println("*** Le jeton a été envoyé ****");
     }
     public void facteur(){
         while(true){
             attendre_facteur();
             synchronized (monitorTableau) {
-                envoyer_a(consommateur, tableau[out]);
+                envoyer_a(outOConsommateur, tableau[out]);
                 out = (out + 1) % N;
                 nbaut--;
                 nbmess--;
@@ -88,10 +89,9 @@ public class Producteur extends Thread {
     }
 
 
-    public void envoyer_a(Socket succ, ToSend content){
+    public void envoyer_a(ObjectOutputStream outOSuccesseur, ToSend content){
         try {
-            ObjectOutputStream objectStream = new ObjectOutputStream(succ.getOutputStream());
-            objectStream.writeObject(content);
+            outOSuccesseur.writeObject(content);
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -101,17 +101,21 @@ public class Producteur extends Thread {
     public void setSuccesseur(Socket successeur) {
         this.successeur = successeur;
         //TODO : voir si mettre un output stream.
+        try {
+            outOSuccesseur = new ObjectOutputStream(successeur.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setConsommateur(Socket consommateur) {
         this.consommateur = consommateur;
         //TODO : Verifier si necessaire.
-        /*
         try {
-            outConsommateur = consommateur.getOutputStream();
+            outOConsommateur = new ObjectOutputStream(consommateur.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     public Runnable callSRD(){
@@ -119,11 +123,9 @@ public class Producteur extends Thread {
             @Override
             public void run() {
                 try {
-                    InputStream in = predecesseur.getInputStream();
-                    ObjectInputStream outOPredecesseur = new ObjectInputStream(in);
                     while(true){
                         //TODO : voir comment faire pour les Messages
-                        Object object = outOPredecesseur.readObject();
+                        Object object = inOpredecesseur.readObject();
                         if(object!=null){
                             Jeton jeton = (Jeton) object;
                             System.out.println("**** Le jeton a été reçu ****");
@@ -142,17 +144,38 @@ public class Producteur extends Thread {
 
         InetAddress add = null;
         try {
-            add = InetAddress.getByName(args[0]);
+            add = InetAddress.getByName("25.46.150.102");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+        String reponse;
         try {
+            Jeton jeton = new Jeton(4);
             Socket socket = new Socket(add,4020);
             Producteur producteur = new Producteur(10);
             Scanner sc = new Scanner(System.in);
             Thread th = new Thread(producteur.callSRD());
+            producteur.setSuccesseur(socket);
+            producteur.setPredecesseur(socket);
             th.start();
+            System.out.println("Voulez vous envoyer le jeton :");
+            reponse = sc.nextLine();
+            if(reponse.equals("Y"))
+                producteur.envoyer_a(producteur.outOSuccesseur,jeton);
+            System.out.println("Je fais un sleep");
+            while(true){
 
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setPredecesseur(Socket predecesseur) {
+        this.predecesseur = predecesseur;
+        try {
+            inOpredecesseur = new ObjectInputStream(predecesseur.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
