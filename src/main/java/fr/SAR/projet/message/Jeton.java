@@ -1,6 +1,5 @@
 package fr.SAR.projet.message;
 
-import java.io.Serializable;
 
 public class Jeton extends ToSend {
 

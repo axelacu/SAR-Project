@@ -1,16 +1,16 @@
 package fr.SAR.projet.producteurConsommateur.producteur;
 
+import com.sun.tools.internal.ws.wsdl.document.Input;
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
 import fr.SAR.projet.message.ToSend;
 import fr.SAR.projet.producteurConsommateur.consommateur.Consommateur;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 public class Producteur extends Thread {
     int N;
@@ -23,6 +23,7 @@ public class Producteur extends Thread {
     int id;
     Socket consommateur;
     Socket successeur;
+    Socket predecesseur;
     OutputStream outConsommateur;
     OutputStream outSuccesseur;
 
@@ -114,19 +115,45 @@ public class Producteur extends Thread {
         }*/
     }
 
+    public Runnable callSRD(){
+        return new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    InputStream in = predecesseur.getInputStream();
+                    ObjectInputStream outOPredecesseur = new ObjectInputStream(in);
+                    while(true){
+                        //TODO : voir comment faire pour les Messages
+                        Object object = outOPredecesseur.readObject();
+                        if(object!=null){
+                            Jeton jeton = (Jeton) object;
+                            sur_reception_de(jeton);
+                        }
+                        sleep(1000);
+                    }
+                }catch (Exception e){
+                    System.err.println(e);
+                }
+            }
+        };
+    }
+
     public static void main(String[] args){
+        /*
         InetAddress add = null;
         try {
-            add = InetAddress.getByName("25.46.130.120");
+            add = InetAddress.getByName(args[0]);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
         try {
             Socket socket = new Socket(add,4020);
             Producteur producteur = new Producteur(10);
+            Scanner sc = new Scanner(System.in);
+            System.out.println("Envoyer le jeton.");
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }
