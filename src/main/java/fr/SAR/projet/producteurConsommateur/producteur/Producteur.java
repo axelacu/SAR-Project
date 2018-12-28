@@ -3,7 +3,7 @@ package fr.SAR.projet.producteurConsommateur.producteur;
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
 import fr.SAR.projet.message.ToSend;
-import fr.SAR.projet.producteurConsommateur.Consommateur;
+import fr.SAR.projet.producteurConsommateur.consommateur.Consommateur;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 public class Producteur extends Thread {
     int N;
@@ -27,6 +26,8 @@ public class Producteur extends Thread {
     OutputStream outConsommateur;
     OutputStream outSuccesseur;
 
+    private Object monitorTableau;
+
     public Producteur(){
 
     }
@@ -40,10 +41,12 @@ public class Producteur extends Thread {
     }
 
     public void produire(Message message){
-        attendre_produir();
-        tableau[in] = message;
-        in = (in + 1) % N;
-        nbmess++;
+        attendre_produire();
+        synchronized (monitorTableau) {
+            tableau[in] = message;
+            in = (in + 1) % N;
+            nbmess++;
+        }
     }
     public  void sur_reception_de(Jeton jeton){
         temp = Math.min(nbmess-nbaut,jeton.getVal());
@@ -56,10 +59,12 @@ public class Producteur extends Thread {
     public void facteur(){
         while(true){
             attendre_facteur();
-            envoyer_a(consommateur, tableau[out]);
-            out = (out + 1) % N;
-            nbaut--;
-            nbmess--;
+            synchronized (monitorTableau) {
+                envoyer_a(consommateur, tableau[out]);
+                out = (out + 1) % N;
+                nbaut--;
+                nbmess--;
+            }
         }
     }
 
@@ -72,7 +77,7 @@ public class Producteur extends Thread {
             }
         }
     }
-    public void attendre_produir(){
+    public void attendre_produire(){
         while(!(nbmess<N)){
             try {
                 sleep(1000);
@@ -118,9 +123,8 @@ public class Producteur extends Thread {
         }
         try {
             Socket socket = new Socket(add,4020);
-            Producteur producteur = new Producteur();
-            Jeton jeton = new Jeton(4);
-            producteur.envoyer_a(socket,jeton);
+            Producteur producteur = new Producteur(10);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
