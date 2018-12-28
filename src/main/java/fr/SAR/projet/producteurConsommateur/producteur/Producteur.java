@@ -54,8 +54,7 @@ public class Producteur extends Thread {
         nbaut += temp;
         jeton.setVal(jeton.getVal() - temp);
         envoyer_a(successeur,jeton);
-        //TODO : envoyer via Object outputStream du successeur.
-
+        System.out.println("*** Le jeton a été envoyé ****");
     }
     public void facteur(){
         while(true){
@@ -127,6 +126,7 @@ public class Producteur extends Thread {
                         Object object = outOPredecesseur.readObject();
                         if(object!=null){
                             Jeton jeton = (Jeton) object;
+                            System.out.println("**** Le jeton a été reçu ****");
                             sur_reception_de(jeton);
                         }
                         sleep(1000);
@@ -139,7 +139,7 @@ public class Producteur extends Thread {
     }
 
     public static void main(String[] args){
-        /*
+
         InetAddress add = null;
         try {
             add = InetAddress.getByName(args[0]);
@@ -150,10 +150,11 @@ public class Producteur extends Thread {
             Socket socket = new Socket(add,4020);
             Producteur producteur = new Producteur(10);
             Scanner sc = new Scanner(System.in);
-            System.out.println("Envoyer le jeton.");
+            Thread th = new Thread(producteur.callSRD());
+            th.start();
 
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 }
