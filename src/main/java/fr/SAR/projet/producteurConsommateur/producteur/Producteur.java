@@ -5,9 +5,7 @@ import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
 import fr.SAR.projet.message.ToSend;
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Scanner;
 
 public class Producteur extends Thread {
@@ -141,32 +139,30 @@ public class Producteur extends Thread {
 
     public static void main(String[] args){
 
-        InetAddress add = null;
+        int port=4020;
+
         try {
-            add = InetAddress.getByName("25.46.150.102");
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        String reponse;
-        try {
-            Jeton jeton = new Jeton(4);
-            Socket socket = new Socket(add,4020);
+            InetAddress test = InetAddress.getByName("25.46.150.102");// ne fait pas partie du tp
+            InetSocketAddress val = new InetSocketAddress(test,port);//ne fait pas partie du TP
+            ServerSocket se = new ServerSocket();
+            se.bind(val); // ne fait pas partie du tP.
+
+            System.out.println("Le serveur est à l'écoute " + "dans l'InetAdress suivante : " + se.getInetAddress());
+            System.out.println("Le serveur est à l'ecoute");
+            Socket socket = se.accept();
+            System.out.println(socket.getInetAddress());
+            System.out.println("Connexion accepte");
             Producteur producteur = new Producteur(10);
-            Scanner sc = new Scanner(System.in);
-            Thread th = new Thread(producteur.callSRD());
             producteur.setSuccesseur(socket);
             producteur.setPredecesseur(socket);
+            Thread th = new Thread(producteur.callSRD());
             th.start();
-            System.out.println("Voulez vous envoyer le jeton :");
-            reponse = sc.nextLine();
-            if(reponse.equals("Y"))
-                producteur.envoyer_a(producteur.outOSuccesseur,jeton);
-            System.out.println("Je fais un sleep");
-            while(true){
+            while (true){
 
             }
 
         } catch (Exception e) {
+            System.out.println("laa");
             e.printStackTrace();
         }
     }

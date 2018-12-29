@@ -14,6 +14,9 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.lang.Thread.*;
 
+import fr.SAR.projet.Test.Context;
+import fr.SAR.projet.Test.Serveur;
+import fr.SAR.projet.Test.Site;
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
 import fr.SAR.projet.message.ToSend;
@@ -21,18 +24,24 @@ import fr.SAR.projet.producteurConsommateur.producteur.Producteur;
 
 
 public class Consommateur {
-    public static ArrayList<ObjectOutputStream> producteurs=new ArrayList<>();
-    static Message[] T;
-    static int N;
-    static int inc=0;
-    static int outc=0;
-    static int NbMess=0;
-    static int NbCell=0;
+    ArrayList<ObjectOutputStream> producteurs=new ArrayList<>();
+    Message[] T;
+    int N;
+    int inc=0;
+    int outc=0;
+    int NbMess=0;
+    int NbCell=0;
 
 
-    public static Object monitorInc;
-    public static Object monitorOutC;
-    public static Object monitorJeton;
+    Socket successeur;
+    Socket predecesseur;
+
+    public ObjectOutputStream outOSuccesseur;
+    public ObjectInputStream inOpredecesseur;
+
+    public Object monitorInc;
+    public  Object monitorOutC;
+    public  Object monitorJeton;
 
 
 
@@ -41,7 +50,7 @@ public class Consommateur {
         T=new Message[N];
     }
 
-    public static boolean Sur_Reception_De(ToSend toSend){
+    public  boolean Sur_Reception_De(ToSend toSend){
         try {
             if (toSend instanceof Message) {
                 synchronized (monitorInc) {
@@ -50,11 +59,11 @@ public class Consommateur {
                     NbMess++;
                 }
             }
-            if (toSend instanceof Jeton) { //TODO: pas sure que ce soit obligatoire
+            if (toSend instanceof Jeton) {
                 synchronized (monitorJeton) {
                     Jeton jeton = (Jeton) toSend;
                     jeton.setVal(NbCell);
-
+                    envoyer_a(outOSuccesseur,jeton);
                 }
 
             }
@@ -64,7 +73,10 @@ public class Consommateur {
         }
         return true;
     }
-    public static void consommer(){
+
+
+
+    public  void consommer(){
         while(true){
             while (NbMess > 0) {
                 synchronized (monitorOutC) {
@@ -80,7 +92,7 @@ public class Consommateur {
     }
 
 
-    public static Runnable callSRD(final ToSend toSend){
+    public  Runnable callSRD(final ToSend toSend){
         return new Runnable() {
             @Override
             public void run() {
@@ -88,7 +100,7 @@ public class Consommateur {
             }
         };
     }
-    public static Runnable callConsommer(){
+    public  Runnable callConsommer(){
         return new Runnable() {
             @Override
             public void run() {
@@ -97,17 +109,35 @@ public class Consommateur {
         };
     }
 
-    public static void envoyer_a(Socket succ, ToSend content){
+    public void envoyer_a(ObjectOutputStream outOSuccesseur, ToSend content){
         try {
-            ObjectOutputStream objectStream = new ObjectOutputStream(succ.getOutputStream());
-            objectStream.writeObject(content);
+            outOSuccesseur.writeObject(content);
         }
         catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void main (String[] args){
+    public void lancer_Consommateur(Site site,int port){ //Etablie les connexions entre le conso et chaque producteur
+        try{
+
+            //nouveau serveur pour la connexion avec chaque site
+            InetSocketAddress address = new InetSocketAddress(site.getAdress(), port);
+            ServerSocket se = new ServerSocket();
+            se.bind(address);
+
+            for(int i=0;i<Context.getContext().length;i++){
+
+                //ThreadProducteur threadProducteur=new ThreadProducteur();
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    /*public static void main (String[] args){
         int port = Integer.parseInt(args[1]);
         try {
             InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(args[0]), port);
@@ -117,11 +147,11 @@ public class Consommateur {
             int i=0;
             while (true){
                 Socket soc=se.accept();
-                producteurs.add(new ObjectOutputStream(soc.getOutputStream()));
+                //producteurs.add(new ObjectOutputStream(soc.getOutputStream()));
                 if(i==0){ //lancer le jeton
-                    envoyer_a(soc,jeton);
+                    //envoyer_a(soc,jeton);
                 }
-                ThreadProducteur threadProducteur=new ThreadProducteur(soc,"P"+i);
+                //ThreadProducteur threadProducteur=new ThreadProducteur(soc,"P"+i);
                 threadProducteur.start();
                 i++;
             }
@@ -129,7 +159,7 @@ public class Consommateur {
             e.printStackTrace();
         }
 
-    }
+    }*/
 
 
 

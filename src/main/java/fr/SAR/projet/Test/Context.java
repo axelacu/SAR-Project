@@ -11,6 +11,12 @@ public class Context {
     private static int indexIp = 0;
     private static int indexPort = 1;
     static String regex = ":";
+    static int portConsumer=4010;
+
+
+    public static int getportConsumer(){
+        return portConsumer;
+    }
 
     public static void setContext(String[] sites){
         context = sites;
@@ -18,6 +24,10 @@ public class Context {
     public static void setContext(String[] sites, String reg){
         context = sites;
         regex = reg;
+    }
+
+    public static String[] getContext() {
+        return context;
     }
 
     public static InetAddress getAddress(int id){

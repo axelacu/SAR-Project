@@ -3,6 +3,7 @@ package fr.SAR.projet.Test;
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.producteurConsommateur.producteur.Producteur;
 
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -41,6 +42,10 @@ public class Site {
 
     }
 
+    public InetAddress getAdress(){
+        return Context.getAddress(id);
+    }
+
     public Socket getSuccessor() {
         return successor;
     }
@@ -49,16 +54,41 @@ public class Site {
         return predecesseur.getPredecesseur();
     }
 
+
+    public void setConsumer(boolean consumer) { //à appeler pour les producteurs
+        this.consumer = consumer;
+    }
+
+
+    public void lancerConsommateur() {
+        try {
+            Serveur serveur = new Serveur(Context.getAddress(id), Context.getportConsumer());
+            for (int i = 0; i < Context.getContext().length - 1; i++) {
+                Socket soc = serveur.ajoutClient();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void main(String[] args){
         System.out.println("What is your id ? : ");
         Scanner sc = new Scanner(System.in);
 
         int id = Integer.parseInt(sc.nextLine());
+
+
         // define context
         String[] context = new String[]{"25.46.150.102:4020","25.46.130.120:4020","25.46.130.120:4010"};
         Context.setContext(context,":");
         //creating site.
         Site site = new Site(id);
+        System.out.println("Etes vous le consommateur? ");
+        String rep=sc.nextLine();
+        if(rep.equals("Y")){ //Cette machine est le consommateur
+
+        }
         Producteur producteur = new Producteur(10);
         producteur.setJetonContext(site.getSuccessor(),site.getPredecesseur());
         Jeton jeton = new Jeton(5);
