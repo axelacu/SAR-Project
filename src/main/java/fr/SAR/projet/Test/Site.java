@@ -1,9 +1,8 @@
 package fr.SAR.projet.Test;
 
-import fr.SAR.projet.message.Jeton;
-import fr.SAR.projet.producteurConsommateur.consommateur.Consommateur;
-import fr.SAR.projet.producteurConsommateur.producteur.Producteur;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
@@ -15,6 +14,8 @@ public class Site {
     private int id;
     private Socket successor;
     private Client predecesseur;
+    private OutputStream outSuccessor;
+    private InputStream inPredecessor;
 
 
     public Site(int id){
@@ -38,6 +39,12 @@ public class Site {
                 e.printStackTrace();
             }
         }
+        try {
+            outSuccessor = successor.getOutputStream();
+            inPredecessor = predecesseur.getInputStream();
+        } catch (IOException e) {
+            System.err.println("Error connecting the Input and outpur Stream");
+        }
 
         System.out.println("*** Well DONE connection established ***");
 
@@ -52,7 +59,7 @@ public class Site {
     }
 
     public Socket getPredecesseur() {
-        return predecesseur.getPredecesseur();
+        return predecesseur.getSserv();
     }
 
 
@@ -61,7 +68,17 @@ public class Site {
     }
 
 
+    public void lancerConsommateur() {
+        try {
+            Serveur serveur = new Serveur(Context.getAddress(id), Context.getportConsumer());
+            for (int i = 0; i < Context.getContext().length - 1; i++) {
+                Socket soc = serveur.ajoutClient();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+    }
 
     public static void main(String[] args){
         System.out.println("What is your id ? : ");
@@ -78,11 +95,11 @@ public class Site {
         System.out.println("Etes vous le consommateur? ");
         String rep=sc.nextLine();
         if(rep.equals("Y")){ //Cette machine est le consommateur
-            Consommateur consommateur= new Consommateur(10);
-            consommateur.initialize_Consommateur(id); //lancer le serveur
+
         }
+        /*
         Producteur producteur = new Producteur(10);
-        producteur.setJetonContext(site.getSuccessor(),site.getPredecesseur());
+        producteur.setJetonContext(site.getSuccessor(),site.getSserv());
         Jeton jeton = new Jeton(5);
         System.out.println("Voulez vous envoyer le jeton :");
         String reponse = sc.nextLine();
@@ -96,6 +113,14 @@ public class Site {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
+    }
+
+    public InputStream getInPredecessor() {
+        return inPredecessor;
+    }
+
+    public OutputStream getOutSuccessor() {
+        return outSuccessor;
     }
 }

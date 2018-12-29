@@ -8,7 +8,6 @@ import fr.SAR.projet.message.Message;
 import fr.SAR.projet.message.ToSend;
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Producteur extends Thread {
@@ -37,10 +36,10 @@ public class Producteur extends Thread {
         out = 0;
         nbmess = 0;
         nbaut = 0;
-        // TODO : initialiser avec l'identifiant du
+
     }
 
-    public void produire(Message message){
+    public void produce(Message message){
         attendre_produire();
         synchronized (monitorTableau) {
             tableau[in] = message;
@@ -204,25 +203,52 @@ public class Producteur extends Thread {
      */
     public boolean searchingConsumer(int id){
         Client client = new Client(Context.getAddress(id), Context.getportConsumer());
+        System.out.println("*** Searching consumer***");
+        client.run();
+        System.out.println("***Connecting to the Consumer *** ");
         setConsommateur(client.getSserv());
         return true;
     }
 
 
-    public void initialize(){
+    public void initialize(int consumerId){
         //TODO : Faire un join
         if(!readyNeighbors()){
             System.err.println("*** You can't You need to define your neighbors ***");
             return;
         }
+        //Thread thread that
         Thread thSRD = new Thread(callSRD());
         Thread thFacteur = new Thread(callFacteur());
 
+        thSRD.start();
+        thFacteur.start();
 
-        //TODO : Lancer les threads
+        searchingConsumer(consumerId);
 
+        menu();
+    }
+    public void menu(){
+        Scanner sc = new Scanner(System.in);
+        String answer;
+        do{
+            System.out.println("Do you want to produce a message ? Y or N ");
+            System.out.print("Answer : ");
+            answer = sc.nextLine();
+            if (answer.equals("Y")) {
+                Message message = writeMessage(sc);
+                produce(message);
+            }
+            System.out.println("Do you want to continue ? Y or N");
+            answer = sc.nextLine();
+        }while(answer.equals("Y"));
 
+    }
 
+    public Message writeMessage(Scanner sc){
+        System.out.println("Write your message :  ");
+        String res = sc.nextLine();
+        return new Message(res);
     }
     //TODO : a definir pour rendre plus propres.
     public void close(){
