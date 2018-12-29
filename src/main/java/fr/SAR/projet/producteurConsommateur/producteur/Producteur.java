@@ -1,11 +1,14 @@
 package fr.SAR.projet.producteurConsommateur.producteur;
 
 
+import fr.SAR.projet.Test.Client;
+import fr.SAR.projet.Test.Context;
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
 import fr.SAR.projet.message.ToSend;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Producteur extends Thread {
@@ -19,8 +22,6 @@ public class Producteur extends Thread {
     int id;
     //TODO : eviter de recevoir de socket.
     Socket consommateur;
-    Socket successeur;
-    Socket predecesseur;
     public ObjectOutputStream outOConsommateur;
     public ObjectOutputStream outOSuccesseur;
     public ObjectInputStream inOpredecesseur;
@@ -95,11 +96,17 @@ public class Producteur extends Thread {
         }
     }
 
-    public void setSuccesseur(Socket successeur) {
-        this.successeur = successeur;
-        //TODO : voir si mettre un output stream.
+    private void setSuccesseur(OutputStream outSuccessor) {
         try {
-            outOSuccesseur = new ObjectOutputStream(successeur.getOutputStream());
+            outOSuccesseur = new ObjectOutputStream(outSuccessor);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setPredecesseur(InputStream inPredecessor) {
+        try {
+            inOpredecesseur = new ObjectInputStream(inPredecessor);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -114,6 +121,7 @@ public class Producteur extends Thread {
             e.printStackTrace();
         }
     }
+
 
     public Runnable callSRD(){
         return new Runnable() {
@@ -137,6 +145,19 @@ public class Producteur extends Thread {
         };
     }
 
+    /**
+     * Runnable that call factor fonction.
+     * @return
+     */
+    public Runnable callFacteur(){
+        return new Runnable() {
+            @Override
+            public void run() {
+                facteur();
+            }
+        };
+    }
+
     public static void main(String[] args){
 
         int port=4020;
@@ -153,36 +174,56 @@ public class Producteur extends Thread {
             System.out.println(socket.getInetAddress());
             System.out.println("Connexion accepte");
             Producteur producteur = new Producteur(10);
-            producteur.setSuccesseur(socket);
-            producteur.setPredecesseur(socket);
+            producteur.setSuccesseur(socket.getOutputStream());
+            producteur.setPredecesseur(socket.getInputStream());
             Thread th = new Thread(producteur.callSRD());
             th.start();
             while (true){
-
             }
-
         } catch (Exception e) {
             System.out.println("laa");
             e.printStackTrace();
         }
     }
 
-    public void setPredecesseur(Socket predecesseur) {
-        this.predecesseur = predecesseur;
-        try {
-            inOpredecesseur = new ObjectInputStream(predecesseur.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void setJetonContext(Socket successeur,Socket predecesseur){
-        Thread th = new Thread(this.callSRD());
+    public void setJetonContext(OutputStream successeur,InputStream predecesseur){
         this.setSuccesseur(successeur);
         this.setPredecesseur(predecesseur);
-        th.start();
     }
 
+    public boolean readyNeighbors(){
+        if(outOSuccesseur== null || inOpredecesseur == null) return false;
+        return false;
+    }
+
+    /**
+     * Search the server of the consumer.
+     * @param id id of the consummer.
+     * @return
+     */
+    public boolean searchingConsumer(int id){
+        Client client = new Client(Context.getAddress(id), Context.getportConsumer());
+        setConsommateur(client.getSserv());
+        return true;
+    }
+
+
+    public void initialize(){
+        //TODO : Faire un join
+        if(!readyNeighbors()){
+            System.err.println("*** You can't You need to define your neighbors ***");
+            return;
+        }
+        Thread thSRD = new Thread(callSRD());
+        Thread thFacteur = new Thread(callFacteur());
+
+
+        //TODO : Lancer les threads
+
+
+
+    }
     //TODO : a definir pour rendre plus propres.
     public void close(){
     }

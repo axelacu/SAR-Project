@@ -1,7 +1,6 @@
 package fr.SAR.projet.Test;
 
 import fr.SAR.projet.message.Jeton;
-import fr.SAR.projet.producteurConsommateur.Consommateur;
 import fr.SAR.projet.producteurConsommateur.producteur.Producteur;
 
 import java.net.InetAddress;
@@ -52,7 +51,7 @@ public class Site {
     }
 
     public Socket getPredecesseur() {
-        return predecesseur.getPredecesseur();
+        return predecesseur.getSserv();
     }
 
 
@@ -64,9 +63,7 @@ public class Site {
     public void lancerConsommateur(int N) {
 
         try {
-
             Serveur serveur = new Serveur(Context.getAddress(id), Context.getportConsumer());
-            Consommateur consommateur= new Consommateur(N,this,serveur);
             for (int i = 0; i < Context.getContext().length - 1; i++) {
                 Socket soc = serveur.ajoutClient();
             }
