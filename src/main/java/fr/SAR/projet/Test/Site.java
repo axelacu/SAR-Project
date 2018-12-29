@@ -1,5 +1,7 @@
 package fr.SAR.projet.Test;
 
+import fr.SAR.projet.producteurConsommateur.consommateur.Consommateur;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -95,7 +97,9 @@ public class Site {
         System.out.println("Etes vous le consommateur? ");
         String rep=sc.nextLine();
         if(rep.equals("Y")){ //Cette machine est le consommateur
-
+            Consommateur consommateur=new Consommateur(10);
+            consommateur.setJetonContext(site.outSuccessor,site.inPredecessor);
+            consommateur.initialize_Consommateur(site.id);
         }
         /*
         Producteur producteur = new Producteur(10);

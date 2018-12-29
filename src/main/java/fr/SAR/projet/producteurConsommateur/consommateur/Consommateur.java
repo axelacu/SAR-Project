@@ -33,8 +33,6 @@ public class Consommateur {
     int NbCell=0;
 
 
-    Socket successeur;
-    Socket predecesseur;
 
     public ObjectOutputStream outOSuccesseur;
     public ObjectInputStream inOpredecesseur;
@@ -45,9 +43,38 @@ public class Consommateur {
 
 
 
+    private void setSuccesseur(OutputStream outSuccessor) {
+        try {
+            outOSuccesseur = new ObjectOutputStream(outSuccessor);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setPredecesseur(InputStream inPredecessor) {
+        try {
+            inOpredecesseur = new ObjectInputStream(inPredecessor);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void setJetonContext(OutputStream successeur,InputStream predecesseur){
+        this.setSuccesseur(successeur);
+        this.setPredecesseur(predecesseur);
+    }
+
+
     public Consommateur(int N){
-        this.N=N;
-        T=new Message[N];
+        try {
+            this.N = N;
+            T = new Message[N];
+
+        }catch(Exception e){
+            System.out.println("Erreur Consommateur");
+            e.printStackTrace();
+        }
     }
 
 
@@ -121,14 +148,22 @@ public class Consommateur {
         }
     }
 
+    public boolean readyNeighbors(){
+        if(outOSuccesseur== null || inOpredecesseur == null) return false;
+        return false;
+    }
+
     public void initialize_Consommateur(int id){ //Etablie les connexions entre le conso et chaque producteur
         try {
-
+            if(!readyNeighbors()){
+                System.err.println("*** You can't You need to define your neighbors ***");
+                return;
+            }
             Serveur serveur = new Serveur(Context.getAddress(id), Context.getportConsumer());
             for (int i = 0; i < Context.getContext().length; i++) {
                 if(i==id) continue;
                 Socket soc = serveur.ajoutClient();
-                ThreadProducteur threadProducteur=new ThreadProducteur(soc,"producteur"+i,this);
+                ThreadProducteur threadProducteur=new ThreadProducteur(soc,"producteur"+i,this,inOpredecesseur);
                 threadProducteur.start();
             }
             System.out.println("Well Done; all connection etablished");
