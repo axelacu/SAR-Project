@@ -66,6 +66,12 @@ public class Site {
         String reponse = sc.nextLine();
         if(reponse.equals("Y"))
             producteur.envoyer_a(producteur.outOSuccesseur,jeton);
-
+        while(true){
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
