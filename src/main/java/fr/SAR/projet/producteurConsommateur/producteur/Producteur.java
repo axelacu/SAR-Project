@@ -1,11 +1,9 @@
 package fr.SAR.projet.producteurConsommateur.producteur;
 
-import com.sun.corba.se.pept.encoding.OutputObject;
+
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
 import fr.SAR.projet.message.ToSend;
-import fr.SAR.projet.producteurConsommateur.consommateur.Consommateur;
-
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
