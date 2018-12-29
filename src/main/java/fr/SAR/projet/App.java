@@ -29,7 +29,7 @@ public class App
             consommateur.setJetonContext(site.getOutSuccessor(),site.getInPredecessor());
             consommateur.initialize_Consommateur(site.getId());
         }else{
-            Producteur producteur = new Producteur(5);
+            Producteur producteur = new Producteur(8);
             producteur.setJetonContext(site.getOutSuccessor(),site.getInPredecessor());
             producteur.initialize(site.getId());
         }
