@@ -1,5 +1,8 @@
 package fr.SAR.projet.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
@@ -11,6 +14,8 @@ public class Site {
     private int id;
     private Socket successor;
     private Client predecesseur;
+    private OutputStream outSuccessor;
+    private InputStream inPredecessor;
 
 
     public Site(int id){
@@ -33,6 +38,12 @@ public class Site {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+        try {
+            outSuccessor = successor.getOutputStream();
+            inPredecessor = predecesseur.getInputStream();
+        } catch (IOException e) {
+            System.err.println("Error connecting the Input and outpur Stream");
         }
 
         System.out.println("*** Well DONE connection established ***");
@@ -105,4 +116,11 @@ public class Site {
         }*/
     }
 
+    public InputStream getInPredecessor() {
+        return inPredecessor;
+    }
+
+    public OutputStream getOutSuccessor() {
+        return outSuccessor;
+    }
 }
