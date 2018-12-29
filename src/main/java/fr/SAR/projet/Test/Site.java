@@ -82,6 +82,10 @@ public class Site {
 
     }
 
+    public int getId(){
+        return id;
+    }
+
     public static void main(String[] args){
         System.out.println("What is your id ? : ");
         Scanner sc = new Scanner(System.in);

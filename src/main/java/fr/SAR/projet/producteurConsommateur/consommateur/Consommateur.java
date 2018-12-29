@@ -160,6 +160,8 @@ public class Consommateur {
                 return;
             }
             Serveur serveur = new Serveur(Context.getAddress(id), Context.getportConsumer());
+            Jeton jeton=new Jeton(N);
+            envoyer_a(outOSuccesseur,jeton);
             for (int i = 0; i < Context.getContext().length; i++) {
                 if(i==id) continue;
                 Socket soc = serveur.ajoutClient();
