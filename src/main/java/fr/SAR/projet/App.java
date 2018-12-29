@@ -28,11 +28,10 @@ public class App
             Consommateur consommateur=new Consommateur(10);
             consommateur.setJetonContext(site.getOutSuccessor(),site.getInPredecessor());
             consommateur.initialize_Consommateur(site.getId());
-
         }else{
             Producteur producteur = new Producteur(5);
             producteur.setJetonContext(site.getOutSuccessor(),site.getInPredecessor());
-            producteur.initialize(10);
+            producteur.initialize(site.getId());
         }
 
     }
