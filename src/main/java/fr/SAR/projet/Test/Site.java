@@ -64,8 +64,10 @@ public class Site {
         Jeton jeton = new Jeton(5);
         System.out.println("Voulez vous envoyer le jeton :");
         String reponse = sc.nextLine();
-        if(reponse.equals("Y"))
-            producteur.envoyer_a(producteur.outOSuccesseur,jeton);
+        if(reponse.equals("Y")) {
+            producteur.envoyer_a(producteur.outOSuccesseur, jeton);
+            System.out.println("Le jeton a été envoyé ");
+        }
         while(true){
             try {
                 sleep(100);
