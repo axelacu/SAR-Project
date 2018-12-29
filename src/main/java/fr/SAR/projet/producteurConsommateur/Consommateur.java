@@ -1,6 +1,9 @@
 package fr.SAR.projet.producteurConsommateur;
 
 
+import fr.SAR.projet.Test.Serveur;
+import fr.SAR.projet.Test.Site;
+
 import java.util.*;
 import java.net.*;
 import java.io.*;
@@ -23,9 +26,13 @@ public class Consommateur {
     int inc;
     int outc;
     int NbmessC;
+    Site site;
+    Serveur serveur;
 
-    public Consommateur(int N){
+    public Consommateur(int N, Site site, Serveur serveur){
         this.N=N;
+        this.site=site;
+        this.serveur=serveur;
         T=new String[N];
         inc=0;
         outc=0;
