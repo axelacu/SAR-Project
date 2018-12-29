@@ -50,6 +50,9 @@ public class Consommateur {
         T=new Message[N];
     }
 
+
+
+
     public  boolean Sur_Reception_De(ToSend toSend){
         try {
             if (toSend instanceof Message) {
@@ -109,7 +112,7 @@ public class Consommateur {
         };
     }
 
-    public void envoyer_a(ObjectOutputStream outOSuccesseur, ToSend content){
+    public void envoyer_a(ObjectOutputStream outOSuccesseur, Jeton content){
         try {
             outOSuccesseur.writeObject(content);
         }
@@ -118,22 +121,21 @@ public class Consommateur {
         }
     }
 
-    public void lancer_Consommateur(Site site,int port){ //Etablie les connexions entre le conso et chaque producteur
-        try{
+    public void initialize_Consommateur(int id){ //Etablie les connexions entre le conso et chaque producteur
+        try {
 
-            //nouveau serveur pour la connexion avec chaque site
-            InetSocketAddress address = new InetSocketAddress(site.getAdress(), port);
-            ServerSocket se = new ServerSocket();
-            se.bind(address);
-
-            for(int i=0;i<Context.getContext().length;i++){
-
-                //ThreadProducteur threadProducteur=new ThreadProducteur();
+            Serveur serveur = new Serveur(Context.getAddress(id), Context.getportConsumer());
+            for (int i = 0; i < Context.getContext().length; i++) {
+                if(i==id) continue;
+                Socket soc = serveur.ajoutClient();
+                ThreadProducteur threadProducteur=new ThreadProducteur(soc,"producteur"+i,this);
+                threadProducteur.start();
             }
-
-        }catch(Exception e){
+            System.out.println("Well Done; all connection etablished");
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
 
     }
 

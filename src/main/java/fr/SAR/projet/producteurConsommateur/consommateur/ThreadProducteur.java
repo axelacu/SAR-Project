@@ -13,21 +13,31 @@ public class ThreadProducteur extends Thread{
     String name;
     ObjectInputStream in;
     ObjectOutputStream out;
+    Consommateur consommateur;
 
-    public ThreadProducteur(Socket socket,String name){
-        se = socket;
-        this.name=name;
+    public ThreadProducteur(Socket socket,String name,Consommateur consommateur){
+        try {
+            se = socket;
+            this.name = name;
+            this.consommateur=consommateur;
+            in = new ObjectInputStream(se.getInputStream());
+            out = new ObjectOutputStream(se.getOutputStream());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void run() {
         try {
-            in = new ObjectInputStream(se.getInputStream());
-            out= new ObjectOutputStream(se.getOutputStream());
-            //Consommateur.callConsommer().run();
-            while (true){
-                //Consommateur.callSRD(new Message((String)in.readObject())).run();
+            Thread consumer=new Thread(consommateur.callConsommer());
+            consumer.start();
+            boolean b=true;
+            while (b){ //Ici,  sur cette socket il ne peut recevoir que les messages
+                ToSend message=(ToSend)in.readObject();
+                b=consommateur.Sur_Reception_De(message);
             }
+            System.out.println("Probleme SRD; la socket va se deconnecter");
         }
         catch (Exception e){
             System.err.println("Erreur : " +e);
