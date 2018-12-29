@@ -5,7 +5,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 public class Client extends Thread {
-    public Socket predecesseur;
+    public Socket sserv;
     private InetAddress addr;
     private int port;
     public Client(InetAddress addr, int port){
@@ -17,23 +17,23 @@ public class Client extends Thread {
     public void run() {
         do {
             try {
-                this.predecesseur = new Socket(addr, port);
+                this.sserv = new Socket(addr, port);
             } catch (IOException e) {
-                this.predecesseur = null;
+                this.sserv = null;
                 try {
                     sleep(5000);
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }
             }
-        }while (predecesseur == null);
+        }while (sserv == null);
     }
 
     public boolean connect(){
-        return (predecesseur != null);
+        return (sserv != null);
     }
 
-    public Socket getPredecesseur() {
-        return predecesseur;
+    public Socket getSserv() {
+        return sserv;
     }
 }

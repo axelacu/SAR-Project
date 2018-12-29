@@ -1,8 +1,5 @@
 package fr.SAR.projet.Test;
 
-import fr.SAR.projet.message.Jeton;
-import fr.SAR.projet.producteurConsommateur.producteur.Producteur;
-
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
@@ -51,7 +48,7 @@ public class Site {
     }
 
     public Socket getPredecesseur() {
-        return predecesseur.getPredecesseur();
+        return predecesseur.getSserv();
     }
 
 
@@ -89,8 +86,9 @@ public class Site {
         if(rep.equals("Y")){ //Cette machine est le consommateur
 
         }
+        /*
         Producteur producteur = new Producteur(10);
-        producteur.setJetonContext(site.getSuccessor(),site.getPredecesseur());
+        producteur.setJetonContext(site.getSuccessor(),site.getSserv());
         Jeton jeton = new Jeton(5);
         System.out.println("Voulez vous envoyer le jeton :");
         String reponse = sc.nextLine();
@@ -104,6 +102,7 @@ public class Site {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
+
 }
