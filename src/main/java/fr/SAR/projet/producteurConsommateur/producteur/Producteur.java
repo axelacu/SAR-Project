@@ -19,12 +19,13 @@ public class Producteur extends Thread {
     int nbaut;
     int temp;
     int id;
+    //TODO : eviter de recevoir de socket.
     Socket consommateur;
     Socket successeur;
     Socket predecesseur;
-    ObjectOutputStream outOConsommateur;
-    ObjectOutputStream outOSuccesseur;
-    ObjectInputStream inOpredecesseur;
+    public ObjectOutputStream outOConsommateur;
+    public ObjectOutputStream outOSuccesseur;
+    public ObjectInputStream inOpredecesseur;
 
     private Object monitorTableau;
 
@@ -177,5 +178,16 @@ public class Producteur extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setJetonContext(Socket successeur,Socket predecesseur){
+        Thread th = new Thread(this.callSRD());
+        this.setSuccesseur(successeur);
+        this.setPredecesseur(predecesseur);
+        th.start();
+    }
+
+    //TODO : a definir pour rendre plus propres.
+    public void close(){
     }
 }

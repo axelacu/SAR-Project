@@ -1,5 +1,8 @@
 package fr.SAR.projet.Test;
 
+import fr.SAR.projet.message.Jeton;
+import fr.SAR.projet.producteurConsommateur.producteur.Producteur;
+
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -38,14 +41,31 @@ public class Site {
 
     }
 
+    public Socket getSuccessor() {
+        return successor;
+    }
+
+    public Socket getPredecesseur() {
+        return predecesseur.getPredecesseur();
+    }
+
     public static void main(String[] args){
         System.out.println("What is your id ? : ");
-        Scanner scanner = new Scanner(System.in);
-        int id = Integer.parseInt(scanner.nextLine());
+        Scanner sc = new Scanner(System.in);
+
+        int id = Integer.parseInt(sc.nextLine());
         // define context
         String[] context = new String[]{"25.46.150.102:4020","25.46.130.120:4020","25.46.130.120:4010"};
         Context.setContext(context,":");
         //creating site.
         Site site = new Site(id);
+        Producteur producteur = new Producteur(10);
+        producteur.setJetonContext(site.getSuccessor(),site.getPredecesseur());
+        Jeton jeton = new Jeton(5);
+        System.out.println("Voulez vous envoyer le jeton :");
+        String reponse = sc.nextLine();
+        if(reponse.equals("Y"))
+            producteur.envoyer_a(producteur.outOSuccesseur,jeton);
+
     }
 }

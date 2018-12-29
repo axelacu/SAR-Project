@@ -32,4 +32,8 @@ public class Client extends Thread {
     public boolean connect(){
         return (predecesseur != null);
     }
+
+    public Socket getPredecesseur() {
+        return predecesseur;
+    }
 }
