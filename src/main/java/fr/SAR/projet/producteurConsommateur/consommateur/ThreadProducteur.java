@@ -6,6 +6,7 @@ import fr.SAR.projet.message.ToSend;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ThreadProducteur extends Thread{
 
@@ -14,16 +15,14 @@ public class ThreadProducteur extends Thread{
     ObjectInputStream in;
     ObjectOutputStream out;
     Consommateur consommateur;
-    ObjectInputStream inOpredecesseur;
 
-    public ThreadProducteur(Socket socket,String name,Consommateur consommateur,ObjectInputStream inOpredecesseur){
+    public ThreadProducteur(Socket socket,String name,Consommateur consommateur){
         try {
-            se = socket;
+            this.se = socket;
             this.name = name;
             this.consommateur=consommateur;
             in = new ObjectInputStream(se.getInputStream());
             out = new ObjectOutputStream(se.getOutputStream());
-            this.inOpredecesseur=inOpredecesseur;
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -36,9 +35,15 @@ public class ThreadProducteur extends Thread{
             public void run() {
                 try {
                     while(true) {
-                        Message message = (Message) inOpredecesseur.readObject();
-                        consommateur.Sur_Reception_De(message);
+                        Object object = in.readObject();
+                        if(object!=null){
+                            Message message = (Message) object;
+                            System.out.println("**** Un message a ete recu ****");
+                            consommateur.Sur_Reception_De(message);
+                        }
+                        sleep(1000);
                     }
+
                 } catch(Exception e){
                     System.out.println("Erreur dans l'attente d'un message");
                     e.printStackTrace();
@@ -48,37 +53,27 @@ public class ThreadProducteur extends Thread{
     }
 
 
-    public Runnable receiveJeton(){
-        return new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (true) {
-                        Jeton jeton = (Jeton) in.readObject();
-                        consommateur.Sur_Reception_De(jeton);
-                    }
-                } catch(Exception e){
-                    System.out.println("Erreur dans l'attente du jeton");
-                    e.printStackTrace();
-                }
-            }
-        };
-    }
+
 
     @Override
     public void run() {
         try {
+            System.out.println("un producteur se lance ");
+            ArrayList<Thread> threads=new ArrayList<>();
             Thread consumer=new Thread(consommateur.callConsommer());
+            threads.add(consumer);
+            System.out.println("je peux consommer");
             consumer.start();
 
-            Thread srdJeton = new Thread(receiveJeton());
-            srdJeton.start();
 
             Thread srdMessage=new Thread(receiveMessage());
+            threads.add(srdMessage);
             srdMessage.start();
 
+            for(Thread th:threads){
+                th.join();
+            }
 
-            Thread.currentThread().notifyAll();
 
         }
         catch (Exception e){

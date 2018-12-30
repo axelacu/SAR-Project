@@ -2,25 +2,16 @@ package fr.SAR.projet.producteurConsommateur.consommateur;
 
 
 import java.util.*;
-import java.net.*;
 import java.io.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Scanner;
-import java.lang.Thread.*;
-
 import fr.SAR.projet.Test.Context;
 import fr.SAR.projet.Test.Serveur;
-import fr.SAR.projet.Test.Site;
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
 import fr.SAR.projet.message.ToSend;
-import fr.SAR.projet.producteurConsommateur.producteur.Producteur;
+
+import static java.lang.Thread.sleep;
 
 
 public class Consommateur {
@@ -37,9 +28,9 @@ public class Consommateur {
     public ObjectOutputStream outOSuccesseur;
     public ObjectInputStream inOpredecesseur;
 
-    public Object monitorInc;
-    public  Object monitorOutC;
-    public  Object monitorJeton;
+    final public Object monitorInc=new Object();
+    final public  Object monitorOutC= new Object();
+    final public  Object monitorJeton=new Object();
 
 
 
@@ -84,7 +75,9 @@ public class Consommateur {
         try {
             if (toSend instanceof Message) {
                 synchronized (monitorInc) {
+
                     T[inc] = ((Message) toSend);
+                    System.out.println(T[inc]);
                     inc = (inc + 1) % N;
                     NbMess++;
                 }
@@ -92,7 +85,10 @@ public class Consommateur {
             if (toSend instanceof Jeton) {
                 synchronized (monitorJeton) {
                     Jeton jeton = (Jeton) toSend;
-                    jeton.setVal(NbCell);
+                    System.out.println("Avant changement :"+jeton.getVal());
+                    jeton.setVal(jeton.getVal()+NbCell);
+                    System.out.println("Apres changement :"+jeton.getVal());
+
                     envoyer_a(outOSuccesseur,jeton);
                 }
 
@@ -122,14 +118,28 @@ public class Consommateur {
     }
 
 
-    public  Runnable callSRD(final ToSend toSend){
+    public Runnable callSRDJeton(){
         return new Runnable() {
             @Override
             public void run() {
-                Sur_Reception_De(toSend);
+                try {
+                    while(true){
+                        //TODO : voir comment faire pour les Messages
+                        Object object = inOpredecesseur.readObject();
+                        if(object!=null){
+                            Jeton jeton = (Jeton) object;
+                            System.out.println("**** Le jeton a été reçu ****");
+                            Sur_Reception_De(jeton);
+                        }
+                        sleep(1000);
+                    }
+                }catch (Exception e){
+                    System.err.println(e);
+                }
             }
         };
     }
+
     public  Runnable callConsommer(){
         return new Runnable() {
             @Override
@@ -142,6 +152,7 @@ public class Consommateur {
     public void envoyer_a(ObjectOutputStream outOSuccesseur, Jeton content){
         try {
             outOSuccesseur.writeObject(content);
+            System.out.println("Le consomateur a envoyer le jeton");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -150,7 +161,7 @@ public class Consommateur {
 
     public boolean readyNeighbors(){
         if(outOSuccesseur== null || inOpredecesseur == null) return false;
-        return false;
+        return true;
     }
 
     public void initialize_Consommateur(int id){ //Etablie les connexions entre le conso et chaque producteur
@@ -159,16 +170,22 @@ public class Consommateur {
                 System.err.println("*** You can't You need to define your neighbors ***");
                 return;
             }
-            Serveur serveur = new Serveur(Context.getAddress(id), Context.getportConsumer());
-            Jeton jeton=new Jeton(N);
-            envoyer_a(outOSuccesseur,jeton);
-            for (int i = 0; i < Context.getContext().length; i++) {
-                if(i==id) continue;
-                Socket soc = serveur.ajoutClient();
-                ThreadProducteur threadProducteur=new ThreadProducteur(soc,"producteur"+i,this,inOpredecesseur);
-                threadProducteur.start();
+
+           Serveur serveur = new Serveur(Context.getAddress(id), Context.getportConsumer());
+           Jeton jeton=new Jeton(N);
+           envoyer_a(outOSuccesseur,jeton);
+           Thread threadJeton=new Thread(callSRDJeton());
+           threadJeton.start();
+
+
+           for (int i = 0; i < Context.getContext().length; i++) {
+               if(i==id) continue;
+               Socket soc = serveur.ajoutClient();
+               ThreadProducteur threadProducteur=new ThreadProducteur(soc,"producteur"+i,this);
+               threadProducteur.start();
+
             }
-            System.out.println("Well Done; all connection etablished");
+           System.out.println("Well Done; all connection etablished");
         } catch (Exception e) {
             e.printStackTrace();
         }

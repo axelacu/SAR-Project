@@ -193,7 +193,7 @@ public class Producteur extends Thread {
 
     public boolean readyNeighbors(){
         if(outOSuccesseur== null || inOpredecesseur == null) return false;
-        return false;
+        return true;
     }
 
     /**

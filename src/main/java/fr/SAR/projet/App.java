@@ -18,7 +18,7 @@ public class App
         Scanner sc = new Scanner(System.in);
 
         int id = Integer.parseInt(sc.nextLine());
-        String[] context = new String[]{"25.46.150.102:4020","25.46.130.120:4020","25.46.130.120:4030"};
+        String[] context = new String[]{"25.46.150.102:4020","25.46.130.120:4020","25.46.130.120:4021"};
         Context.setContext(context,":");
         //creating site.
         Site site = new Site(id);
