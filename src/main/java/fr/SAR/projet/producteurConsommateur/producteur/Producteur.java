@@ -25,7 +25,8 @@ public class Producteur extends Thread {
     public ObjectOutputStream outOSuccesseur;
     public ObjectInputStream inOpredecesseur;
 
-    private Object monitorTableau;
+    private final Object monitorTableau = new Object();
+    private final Object monitorAnswer = new Object();
 
     public Producteur(){
 
@@ -36,23 +37,25 @@ public class Producteur extends Thread {
         out = 0;
         nbmess = 0;
         nbaut = 0;
-
+        this.N = N;
     }
 
     public void produce(Message message){
+        System.out.println("Production du message... ");
         attendre_produire();
         synchronized (monitorTableau) {
             tableau[in] = message;
             in = (in + 1) % N;
             nbmess++;
         }
+        System.out.println("Message envoyé ! ");
     }
     public  void sur_reception_de(Jeton jeton){
         temp = Math.min(nbmess-nbaut,jeton.getVal());
         nbaut += temp;
         jeton.setVal(jeton.getVal() - temp);
         envoyer_a(outOSuccesseur,jeton);
-        System.out.println("*** Le jeton a été envoyé ****");
+        //System.out.println("*** Le jeton a été envoyé ****");
     }
     public void facteur(){
         while(true){
@@ -128,11 +131,10 @@ public class Producteur extends Thread {
             public void run() {
                 try {
                     while(true){
-                        //TODO : voir comment faire pour les Messages
                         Object object = inOpredecesseur.readObject();
                         if(object!=null){
                             Jeton jeton = (Jeton) object;
-                            System.out.println("**** Le jeton a été reçu ****");
+                            //System.out.println("**** Le jeton a été reçu ****");
                             sur_reception_de(jeton);
                         }
                         sleep(1000);
@@ -210,7 +212,16 @@ public class Producteur extends Thread {
         return true;
     }
 
+    Runnable callProd(final Message message){
+        return new Runnable() {
+            @Override
+            public void run() {
+                produce(message);
+            }
+        };
+    }
 
+    //TODO : verifier si l'envoie de message est possible ( voir tableau plein)
     public void initialize(int consumerId){
         //TODO : Faire un join
         if(!readyNeighbors()){
@@ -225,7 +236,6 @@ public class Producteur extends Thread {
         thFacteur.start();
 
         searchingConsumer(consumerId);
-
         menu();
     }
     public void menu(){
@@ -235,17 +245,27 @@ public class Producteur extends Thread {
             System.out.println("Do you want to produce a message ? Y or N ");
             System.out.print("Answer : ");
             answer = sc.nextLine();
+
             if (answer.equals("Y")) {
-                Message message = writeMessage(sc);
-                produce(message);
+                if(nbmess>N){
+                    System.err.println("Limite de message atteinte");
+                    attendre_produire();
+                }
+                Message message;
+                synchronized (monitorAnswer) {
+                   message = writeMessage(sc);
+                }
+                Thread prodMess = new Thread(callProd(message));
+                prodMess.start();
             }
             System.out.println("Do you want to continue ? Y or N");
             answer = sc.nextLine();
+
         }while(answer.equals("Y"));
 
     }
 
-    public Message writeMessage(Scanner sc){
+    public synchronized Message writeMessage(Scanner sc){
         System.out.println("Write your message :  ");
         String res = sc.nextLine();
         return new Message(res);

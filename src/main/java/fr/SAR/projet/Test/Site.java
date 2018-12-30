@@ -47,7 +47,6 @@ public class Site {
         } catch (IOException e) {
             System.err.println("Error connecting the Input and outpur Stream");
         }
-
         System.out.println("*** Well DONE connection established ***");
 
     }
