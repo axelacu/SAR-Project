@@ -27,7 +27,7 @@ public class Producteur extends Thread {
 
     private final Object monitorTableau = new Object();
     private final Object monitorAnswer = new Object();
-
+    private final Object monitorSender = new Object();
     public Producteur(){
 
     }
@@ -252,17 +252,18 @@ public class Producteur extends Thread {
                     attendre_produire();
                 }
                 Message message;
-                synchronized (monitorAnswer) {
+                synchronized (monitorSender) {
                    message = writeMessage(sc);
                 }
                 Thread prodMess = new Thread(callProd(message));
                 prodMess.start();
             }
+
             synchronized (monitorAnswer){
                 System.out.println("Do you want to continue ? Y or N");
                 answer = sc.nextLine();
             }
-        }while(answer.equals("Y"));
+        }while(!answer.equals("N"));
 
     }
 
