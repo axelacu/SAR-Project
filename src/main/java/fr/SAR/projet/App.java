@@ -16,9 +16,9 @@ public class App
     public static void main( String[] args ) {
         System.out.println("What is your id ? : ");
         Scanner sc = new Scanner(System.in);
-
+        int consumerid = 0;
         int id = Integer.parseInt(sc.nextLine());
-        String[] context = new String[]{"25.46.150.102:4020","25.46.130.120:4020","25.46.130.120:4021"};
+        String[] context = new String[]{"25.46.150.102:4020","25.46.130.120:4020","25.84.72.231:4020"};
         Context.setContext(context,":");
         //creating site.
         Site site = new Site(id);
@@ -27,11 +27,11 @@ public class App
         if(rep.equals("Y")){
             Consommateur consommateur=new Consommateur(10);
             consommateur.setJetonContext(site.getOutSuccessor(),site.getInPredecessor());
-            consommateur.initialize_Consommateur(site.getId());
+            consommateur.initialize_Consommateur(consumerid);
         }else{
             Producteur producteur = new Producteur(8);
             producteur.setJetonContext(site.getOutSuccessor(),site.getInPredecessor());
-            producteur.initialize(site.getId());
+            producteur.initialize(consumerid);
         }
 
     }
