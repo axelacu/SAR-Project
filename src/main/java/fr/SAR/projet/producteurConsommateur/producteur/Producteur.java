@@ -258,9 +258,10 @@ public class Producteur extends Thread {
                 Thread prodMess = new Thread(callProd(message));
                 prodMess.start();
             }
-            System.out.println("Do you want to continue ? Y or N");
-            answer = sc.nextLine();
-
+            synchronized (monitorAnswer){
+                System.out.println("Do you want to continue ? Y or N");
+                answer = sc.nextLine();
+            }
         }while(answer.equals("Y"));
 
     }
