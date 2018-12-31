@@ -153,6 +153,7 @@ public class Consommateur {
                         sleep(1000);
                     }catch(Exception e){
                         e.printStackTrace();
+                        System.out.println("probleme consommateur");
                     }
                 }
             }
