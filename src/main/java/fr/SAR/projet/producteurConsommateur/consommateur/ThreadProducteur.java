@@ -60,10 +60,7 @@ public class ThreadProducteur extends Thread{
         try {
             System.out.println("un producteur se lance ");
             ArrayList<Thread> threads=new ArrayList<>();
-            Thread consumer=new Thread(consommateur.callConsommer());
-            threads.add(consumer);
-            System.out.println("je peux consommer");
-            consumer.start();
+
 
 
             Thread srdMessage=new Thread(receiveMessage());

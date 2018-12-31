@@ -28,7 +28,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>fr.SAR.projet</mainClass>
+              <mainClass>fr.SAR.projet.App</mainClass>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib</classpathPrefix>
             </manifest>

@@ -29,8 +29,9 @@ public class Consommateur {
     public ObjectInputStream inOpredecesseur;
 
     final public Object monitorInc=new Object();
-    final public  Object monitorOutC= new Object();
+    final public  Object monitorNbMess= new Object();
     final public  Object monitorJeton=new Object();
+    final public Object monitorNbCell=new Object();
 
 
 
@@ -75,21 +76,25 @@ public class Consommateur {
         try {
             if (toSend instanceof Message) {
                 synchronized (monitorInc) {
-
-                    T[inc] = ((Message) toSend);
-                    System.out.println(T[inc]);
-                    inc = (inc + 1) % N;
-                    NbMess++;
+                    synchronized (monitorNbMess) {
+                        T[inc] = ((Message) toSend);
+                        System.out.println(T[inc].getMessage());
+                        inc = (inc + 1) % N;
+                        this.NbMess++;
+                        System.out.println("Le nombre de message a ete augmenter ");
+                    }
                 }
             }
             if (toSend instanceof Jeton) {
                 synchronized (monitorJeton) {
-                    Jeton jeton = (Jeton) toSend;
-                    System.out.println("Avant changement :"+jeton.getVal());
-                    jeton.setVal(jeton.getVal()+NbCell);
-                    System.out.println("Apres changement :"+jeton.getVal());
-
-                    envoyer_a(outOSuccesseur,jeton);
+                    synchronized (monitorNbCell) {
+                        Jeton jeton = (Jeton) toSend;
+                        System.out.println("Avant changement :" + jeton.getVal());
+                        jeton.setVal(jeton.getVal() + this.NbCell);
+                        this.NbCell=0;
+                        System.out.println("Apres changement :" + jeton.getVal());
+                        envoyer_a(outOSuccesseur, jeton);
+                    }
                 }
 
             }
@@ -103,18 +108,17 @@ public class Consommateur {
 
 
     public  void consommer(){
-        while(true){
-            while (NbMess > 0) {
-                synchronized (monitorOutC) {
-                    System.out.println("Je consomme le message:");
-                    System.out.println(T[outc]);
-                    outc = (outc + 1) % N;
-                    NbMess--;
-                    NbCell++;
+        if (this.NbMess > 0) {
+                synchronized (monitorNbMess) {
+                    synchronized (monitorNbCell) {
+                        System.out.println("Je consomme le message:  ");
+                        System.out.println(T[outc].getMessage());
+                        outc = (outc + 1) % N;
+                        this.NbMess--;
+                        this.NbCell++;
+                    }
                 }
-
             }
-        }
     }
 
 
@@ -124,7 +128,6 @@ public class Consommateur {
             public void run() {
                 try {
                     while(true){
-                        //TODO : voir comment faire pour les Messages
                         Object object = inOpredecesseur.readObject();
                         if(object!=null){
                             Jeton jeton = (Jeton) object;
@@ -144,7 +147,14 @@ public class Consommateur {
         return new Runnable() {
             @Override
             public void run() {
-                consommer();
+                while(true) {
+                    consommer();
+                    try {
+                        sleep(1000);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
             }
         };
     }
@@ -176,6 +186,9 @@ public class Consommateur {
            envoyer_a(outOSuccesseur,jeton);
            Thread threadJeton=new Thread(callSRDJeton());
            threadJeton.start();
+           Thread consumer=new Thread(callConsommer());
+           System.out.println("je peux consommer");
+           consumer.start();
 
 
            for (int i = 0; i < Context.getContext().length; i++) {
