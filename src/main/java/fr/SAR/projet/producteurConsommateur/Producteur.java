@@ -47,8 +47,8 @@ public class Producteur extends Thread {
             tableau[in] = message;
             in = (in + 1) % N;
             nbmess++;
+            System.out.println("Message envoyé ! ");
         }
-        System.out.println("Message envoyé ! ");
     }
     public  void sur_reception_de(Jeton jeton){
         temp = Math.min(nbmess-nbaut,jeton.getVal());
@@ -253,7 +253,11 @@ public class Producteur extends Thread {
                 Thread prodMess = new Thread(callProd(message));
                 prodMess.start();
             }
-
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             synchronized (monitorAnswer){
                 System.out.println("Do you want to continue ? Y or N");
                 answer = sc.nextLine();
