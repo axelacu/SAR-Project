@@ -28,7 +28,7 @@ public class App {
         if (rep.equals("Y")) {
             Consommateur consommateur = new Consommateur(10);
             consommateur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
-            consommateur.initialize_Consommateur(consommateurid);
+            consommateur.initialize_Consumer(consommateurid);
         } else {
             Producteur producteur = new Producteur(8);
             producteur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
