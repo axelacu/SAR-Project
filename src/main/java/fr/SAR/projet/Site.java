@@ -124,6 +124,14 @@ public class Site {
     }
 
     /**
+     * return true is the site is a consumer.
+     * @return
+     */
+    public boolean isConsumer() {
+        return consumer;
+    }
+
+    /**
      * Close the current site.
      */
     public void close() {
