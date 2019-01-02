@@ -5,35 +5,32 @@ import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Requete;
 import fr.SAR.projet.message.ToSend;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 import static java.lang.Thread.sleep;
 
 public class Election  {
     ObjectOutputStream successor;
+    ObjectInputStream predecessor;
     boolean initiator;
     Etat etat;
     int identity;
     int id;
 
 
-    public Election(Etat etat, OutputStream successor,boolean initiator,int id){
+    public Election( OutputStream successor, InputStream predecessor,boolean initiator, int id){
         try {
             etat = Etat.Repos;
             this.initiator = initiator;
             this.identity = -1;
             this.successor = new ObjectOutputStream(successor);
             this.id = id;
+            this.predecessor=new ObjectInputStream(predecessor);
         }catch(Exception e){
             e.printStackTrace();
         }
     }
 
-    public boolean Sur_reception_De(Jeton jeton){
-        return true;
-    }
 
 
     public void Leader(){ //pour les initiateurs uniquement
@@ -71,7 +68,7 @@ public class Election  {
             }
         }
         if(toSend instanceof Requete){
-            if(etat==etat.Repos || ((Requete) toSend).getSiteId()==this.identity){
+            if(etat==etat.Repos || ((Requete) toSend).getSiteId()<=this.identity){
                 etat=etat.en_cours;
                 this.identity=((Requete) toSend).getSiteId();
                 envoyer_a(successor,toSend);
@@ -86,17 +83,22 @@ public class Election  {
     }
 
 
+
     public Runnable callSRD(){
         return new Runnable() {
             @Override
             public void run() {
-                while (etat!=etat.termine){
-                  callSRD();
-                  try {
-                      sleep(100);
-                  } catch(Exception e){
-                      e.printStackTrace();
-                  }
+                try {
+                    while(true){
+                        Object object = predecessor.readObject();
+                        if(object!=null){
+                            ToSend message = (ToSend) object;
+                            sur_reception_de(message);
+                        }
+                        sleep(1000);
+                    }
+                }catch (Exception e){
+                    System.err.println(e);
                 }
             }
         };
@@ -116,7 +118,28 @@ public class Election  {
         }
     }
 
-    public void initializeElection(){
+    public int initializeElection(boolean isConsumer){
+        Thread srd=new Thread(callSRD());
+        srd.start();
+        if (isConsumer){
+            Leader();
+        }
+        try{
+            srd.join();
+
+        }catch (Exception e){
+            System.out.println("Probleme Leader");
+            e.printStackTrace();
+        }finally {
+            try{
+                successor.close();
+                predecessor.close();
+            }catch (Exception e){
+                System.out.println("Probleme fermeture du canal du successeur");
+            }
+        }
+        return this.identity;
+
 
     }
 

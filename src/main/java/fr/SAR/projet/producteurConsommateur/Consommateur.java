@@ -114,7 +114,6 @@ public class Consommateur {
                         System.out.println(T[inc].getMessage());
                         inc = (inc + 1) % N;
                         this.NbMess++;
-                        System.out.println("The message number has been increased");
                     }
                 }
             }
@@ -122,10 +121,8 @@ public class Consommateur {
                 synchronized (monitorJeton) {
                     synchronized (monitorNbCell) {
                         Jeton jeton = (Jeton) toSend;
-                        System.out.println("Before change :" + jeton.getVal());
                         jeton.setVal(jeton.getVal() + this.NbCell);
                         this.NbCell=0;
-                        System.out.println("After change :" + jeton.getVal());
                         envoyer_a(outOSuccesseur, jeton);
                     }
                 }
@@ -170,7 +167,6 @@ public class Consommateur {
                         Object object = inOpredecesseur.readObject();
                         if(object!=null){
                             Jeton jeton = (Jeton) object;
-                            System.out.println("**** Le jeton a été reçu ****");
                             Sur_Reception_De(jeton);
                         }
                         sleep(1000);
@@ -202,7 +198,6 @@ public class Consommateur {
     public void envoyer_a(ObjectOutputStream outOSuccesseur, Jeton content){
         try {
             outOSuccesseur.writeObject(content);
-            System.out.println("Le consomateur a envoyer le jeton");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -227,7 +222,6 @@ public class Consommateur {
            Thread threadJeton=new Thread(callSRDJeton());
            threadJeton.start();
            Thread consumer=new Thread(callConsommer());
-           System.out.println("je peux consommer");
            consumer.start();
 
 

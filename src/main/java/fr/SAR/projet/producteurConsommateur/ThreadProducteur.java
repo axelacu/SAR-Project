@@ -36,7 +36,6 @@ public class ThreadProducteur extends Thread{
                         Object object = in.readObject();
                         if(object!=null){
                             Message message = (Message) object;
-                            System.out.println("**** Un message a ete recu ****");
                             consommateur.Sur_Reception_De(message);
                         }
                         sleep(1000);
@@ -56,11 +55,7 @@ public class ThreadProducteur extends Thread{
     @Override
     public void run() {
         try {
-            System.out.println("un producteur se lance ");
             ArrayList<Thread> threads=new ArrayList<>();
-
-
-
             Thread srdMessage=new Thread(receiveMessage());
             threads.add(srdMessage);
             srdMessage.start();
