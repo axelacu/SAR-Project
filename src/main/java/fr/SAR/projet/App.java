@@ -50,7 +50,13 @@ public class App {
         Scanner sc = new Scanner(System.in);
 
         int id = Integer.parseInt(sc.nextLine());
+        String nickName;
         Context.setContext(context, ":");
+        do{
+            System.out.println("Give a nick name please : ");
+            nickName = sc.nextLine();
+        }while (nickName==null);
+
         //creating site.
         Site site = new Site(id);
 
@@ -71,11 +77,11 @@ public class App {
                 site.setConsumer(false);
             }
             if (site.isConsumer()) {
-                Consommateur consommateur = new Consommateur(10);
+                Consommateur consommateur = new Consommateur(3);
                 consommateur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
                 consommateur.initialize_Consumer(leader);
             } else {
-                Producteur producteur = new Producteur(8);
+                Producteur producteur = new Producteur(3,nickName);
                 producteur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
                 producteur.initialize(leader);
             }

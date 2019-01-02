@@ -19,6 +19,7 @@ public class Producteur extends Thread {
     int nbaut;
     int temp;
     int id;
+    public String name;
     //TODO : eviter de recevoir de socket.
     Socket consommateur;
     public ObjectOutputStream outOConsommateur;
@@ -38,6 +39,15 @@ public class Producteur extends Thread {
         nbmess = 0;
         nbaut = 0;
         this.N = N;
+    }
+    public Producteur(int N, String name){
+        tableau = new Message[N];
+        in = 0;
+        out = 0;
+        nbmess = 0;
+        nbaut = 0;
+        this.N = N;
+        this.name = name;
     }
 
     public void produce(Message message){
@@ -268,6 +278,7 @@ public class Producteur extends Thread {
     public synchronized Message writeMessage(Scanner sc){
         System.out.println("Write your message :  ");
         String res = sc.nextLine();
+        res = name + " : " + res;
         return new Message(res);
     }
 }

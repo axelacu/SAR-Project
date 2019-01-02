@@ -16,7 +16,7 @@ public class Site {
     private int id;
     private Socket successor;
     private Client predecesseur;
-    private Serveur serveur; //Maybe not usefull.
+    private Serveur serveur;
     private OutputStream outSuccessor;
     private InputStream inPredecessor;
     private InputStream inSuccesor;
@@ -29,6 +29,7 @@ public class Site {
      * @param id
      */
     public Site(int id) {
+
         this.id = id;
         //open server
         Serveur serveur = new Serveur(Context.getAddress(id), Context.getPort(id));
