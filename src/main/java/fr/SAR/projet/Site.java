@@ -19,8 +19,8 @@ public class Site {
     private Serveur serveur; //Maybe not usefull.
     private OutputStream outSuccessor;
     private InputStream inPredecessor;
-    //TODO : Help from Axel : use only for bidirectional election.
     private InputStream inSuccesor;
+    private OutputStream outPrecessor;
 
 
     /**
@@ -51,13 +51,14 @@ public class Site {
         }
         try {
             outSuccessor = successor.getOutputStream();
+            outPrecessor = predecesseur.getOutputStream();
+            inSuccesor = successor.getInputStream();
             inPredecessor = predecesseur.getInputStream();
-            inSuccesor = successor.getInputStream(); //TODO : Help from Axel : use only for bidirectional election.
+
         } catch (IOException e) {
             System.err.println("Error connecting the Input and outpur Stream");
         }
         System.out.println("*** Well DONE connection established ***");
-
     }
 
     /**
