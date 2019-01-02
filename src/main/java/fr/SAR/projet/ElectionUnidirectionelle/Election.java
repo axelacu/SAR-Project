@@ -18,7 +18,7 @@ public class Election  {
     int id;
 
 
-    public Election( OutputStream successor, InputStream predecessor,boolean initiator, int id){
+    public Election(int id, OutputStream successor, InputStream predecessor,boolean initiator){
         try {
             etat = Etat.Repos;
             this.initiator = initiator;
