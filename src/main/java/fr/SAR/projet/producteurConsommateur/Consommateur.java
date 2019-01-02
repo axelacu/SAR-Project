@@ -15,19 +15,41 @@ import static java.lang.Thread.sleep;
 
 
 public class Consommateur {
+    //TODO: à voir si on a besoin de la garder
     ArrayList<ObjectOutputStream> producteurs=new ArrayList<>();
+
+    /**
+     * Vector of messages
+     */
     Message[] T;
+    /**
+     * size of vector
+     */
     int N;
+    /**
+     * insertion and extraction index
+     */
     int inc=0;
     int outc=0;
+    /**
+     * number of messages in the vector
+     */
     int NbMess=0;
+    /**
+     * the messages the consumer has to consume in the meantime
+     */
     int NbCell=0;
 
 
-
+    /**
+     * unidirectional ring
+     */
     public ObjectOutputStream outOSuccesseur;
     public ObjectInputStream inOpredecesseur;
 
+    /**
+     * synchronization
+     */
     final public Object monitorInc=new Object();
     final public  Object monitorNbMess= new Object();
     final public  Object monitorJeton=new Object();
@@ -51,10 +73,16 @@ public class Consommateur {
         }
     }
 
+    /**
+     * defines the successor and predecessor for the token
+     * @param successor
+     * @param predecessor
+     */
 
-    public void setJetonContext(OutputStream successeur,InputStream predecesseur){
-        this.setSuccesseur(successeur);
-        this.setPredecesseur(predecesseur);
+
+    public void setJetonContext(OutputStream successor,InputStream predecessor){
+        this.setSuccesseur(successor);
+        this.setPredecesseur(predecessor);
     }
 
 
@@ -62,14 +90,19 @@ public class Consommateur {
         try {
             this.N = N;
             T = new Message[N];
-
         }catch(Exception e){
-            System.out.println("Erreur Consommateur");
+            System.out.println("Error consumer");
             e.printStackTrace();
         }
     }
 
 
+
+    /**
+     * when receiving a message
+     * @param toSend
+     * @return
+     */
 
 
     public  boolean Sur_Reception_De(ToSend toSend){
@@ -81,7 +114,7 @@ public class Consommateur {
                         System.out.println(T[inc].getMessage());
                         inc = (inc + 1) % N;
                         this.NbMess++;
-                        System.out.println("Le nombre de message a ete augmenter ");
+                        System.out.println("The message number has been increased");
                     }
                 }
             }
@@ -89,10 +122,10 @@ public class Consommateur {
                 synchronized (monitorJeton) {
                     synchronized (monitorNbCell) {
                         Jeton jeton = (Jeton) toSend;
-                        System.out.println("Avant changement :" + jeton.getVal());
+                        System.out.println("Before change :" + jeton.getVal());
                         jeton.setVal(jeton.getVal() + this.NbCell);
                         this.NbCell=0;
-                        System.out.println("Apres changement :" + jeton.getVal());
+                        System.out.println("After change :" + jeton.getVal());
                         envoyer_a(outOSuccesseur, jeton);
                     }
                 }
@@ -113,6 +146,10 @@ public class Consommateur {
                     synchronized (monitorNbCell) {
                         System.out.println("Je consomme le message:  ");
                         System.out.println(T[outc].getMessage());
+                        if(T[outc].equals("Consommer please")){
+                            //TODO: relancer l'election
+                        }
+                        T[outc]=null; //supprimer le message
                         outc = (outc + 1) % N;
                         this.NbMess--;
                         this.NbCell++;
@@ -120,6 +157,7 @@ public class Consommateur {
                 }
             }
     }
+
 
 
     public Runnable callSRDJeton(){
@@ -175,7 +213,7 @@ public class Consommateur {
         return true;
     }
 
-    public void initialize_Consommateur(int id){ //Etablie les connexions entre le conso et chaque producteur
+    public void initialize_Consumer(int id){ //Etablie les connexions entre le conso et chaque producteur
         try {
             if(!readyNeighbors()){
                 System.err.println("*** You can't You need to define your neighbors ***");
@@ -207,29 +245,7 @@ public class Consommateur {
 
     }
 
-    /*public static void main (String[] args){
-        int port = Integer.parseInt(args[1]);
-        try {
-            InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(args[0]), port);
-            ServerSocket se = new ServerSocket();
-            se.bind(address);
-            Jeton jeton=new Jeton(N);
-            int i=0;
-            while (true){
-                Socket soc=se.accept();
-                //producteurs.add(new ObjectOutputStream(soc.getOutputStream()));
-                if(i==0){ //lancer le jeton
-                    //envoyer_a(soc,jeton);
-                }
-                //ThreadProducteur threadProducteur=new ThreadProducteur(soc,"P"+i);
-                threadProducteur.start();
-                i++;
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
 
-    }*/
 
 
 

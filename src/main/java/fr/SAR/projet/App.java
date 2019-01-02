@@ -19,12 +19,12 @@ public class App {
         Context.setContext(context, ":");
         //creating site.
         Site site = new Site(id);
-        System.out.println("Etes vous le consommateur? Y or N");
+        System.out.println("Voudriez-vous etre le consommateur? Y or N");
         String rep = sc.nextLine();
         if (rep.equals("Y")) {
             Consommateur consommateur = new Consommateur(10);
             consommateur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
-            consommateur.initialize_Consommateur(site.getId());
+            consommateur.initialize_Consumer(site.getId());
         } else {
             Producteur producteur = new Producteur(8);
             producteur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());

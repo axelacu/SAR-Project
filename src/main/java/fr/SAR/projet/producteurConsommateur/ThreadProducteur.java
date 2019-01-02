@@ -19,8 +19,8 @@ public class ThreadProducteur extends Thread{
             this.se = socket;
             this.name = name;
             this.consommateur=consommateur;
-            in = new ObjectInputStream(se.getInputStream());
-            out = new ObjectOutputStream(se.getOutputStream());
+            this.in = new ObjectInputStream(se.getInputStream());
+            this.out = new ObjectOutputStream(se.getOutputStream());
         } catch (Exception e){
             e.printStackTrace();
         }
