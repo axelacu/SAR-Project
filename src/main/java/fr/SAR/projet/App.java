@@ -22,9 +22,7 @@ public class App {
 
         //election.
         int consommateurid = 1;
-
         //
-
         System.out.println("Etes vous le consommateur? Y or N");
         String rep = sc.nextLine();
         if (rep.equals("Y")) {
