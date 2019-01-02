@@ -1,12 +1,12 @@
-package fr.SAR.projet.producteurConsommateur.consommateur;
+package fr.SAR.projet.producteurConsommateur;
 
 
 import java.util.*;
 import java.io.*;
 import java.io.IOException;
 import java.net.Socket;
-import fr.SAR.projet.Test.Context;
-import fr.SAR.projet.Test.Serveur;
+import fr.SAR.projet.Context;
+import fr.SAR.projet.serveurclient.Serveur;
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
 import fr.SAR.projet.message.ToSend;

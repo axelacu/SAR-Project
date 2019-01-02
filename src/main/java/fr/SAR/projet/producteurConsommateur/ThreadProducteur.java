@@ -1,8 +1,6 @@
-package fr.SAR.projet.producteurConsommateur.consommateur;
+package fr.SAR.projet.producteurConsommateur;
 
-import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
-import fr.SAR.projet.message.ToSend;
 
 import java.io.*;
 import java.net.Socket;

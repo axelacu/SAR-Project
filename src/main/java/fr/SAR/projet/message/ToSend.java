@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 public class ToSend implements Serializable {
 
-    public ToSend(){
-
+    public ToSend() {
     }
-
-
 }

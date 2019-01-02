@@ -1,8 +1,8 @@
-package fr.SAR.projet.producteurConsommateur.producteur;
+package fr.SAR.projet.producteurConsommateur;
 
 
-import fr.SAR.projet.Test.Client;
-import fr.SAR.projet.Test.Context;
+import fr.SAR.projet.serveurclient.Client;
+import fr.SAR.projet.Context;
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
 import fr.SAR.projet.message.ToSend;
@@ -221,7 +221,6 @@ public class Producteur extends Thread {
         };
     }
 
-    //TODO : verifier si l'envoie de message est possible ( voir tableau plein)
     public void initialize(int consumerId){
         //TODO : Faire un join
         if(!readyNeighbors()){
@@ -247,10 +246,6 @@ public class Producteur extends Thread {
             answer = sc.nextLine();
 
             if (answer.equals("Y")) {
-                if(nbmess>N){
-                    System.err.println("Limite de message atteinte");
-                    attendre_produire();
-                }
                 Message message;
                 synchronized (monitorSender) {
                    message = writeMessage(sc);
@@ -264,15 +259,11 @@ public class Producteur extends Thread {
                 answer = sc.nextLine();
             }
         }while(!answer.equals("N"));
-
     }
 
     public synchronized Message writeMessage(Scanner sc){
         System.out.println("Write your message :  ");
         String res = sc.nextLine();
         return new Message(res);
-    }
-    //TODO : a definir pour rendre plus propres.
-    public void close(){
     }
 }
