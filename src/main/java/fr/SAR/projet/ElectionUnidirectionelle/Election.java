@@ -89,7 +89,7 @@ public class Election  {
             @Override
             public void run() {
                 try {
-                    while(true){
+                    while(etat!=etat.termine){
                         Object object = predecessor.readObject();
                         if(object!=null){
                             ToSend message = (ToSend) object;
@@ -118,10 +118,10 @@ public class Election  {
         }
     }
 
-    public int initializeElection(boolean isConsumer){
+    public int initializeElection(){
         Thread srd=new Thread(callSRD());
         srd.start();
-        if (isConsumer){
+        if (this.initiator){
             Leader();
         }
         try{
