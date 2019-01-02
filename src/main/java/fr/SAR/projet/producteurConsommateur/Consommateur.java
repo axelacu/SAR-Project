@@ -141,6 +141,7 @@ public class Consommateur {
 
 
     public  void consommer(){
+        int a;
         if (this.NbMess > 0) {
                 synchronized (monitorNbMess) {
                     synchronized (monitorNbCell) {
