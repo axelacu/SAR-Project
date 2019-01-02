@@ -15,20 +15,26 @@ public class App {
         Scanner sc = new Scanner(System.in);
 
         int id = Integer.parseInt(sc.nextLine());
-        String[] context = new String[]{"25.46.150.102:4020", "25.46.150.102:4021", "25.46.150.102:4022"};
+        String[] context = new String[]{"25.46.150.102:4020", "25.46.130.120:4020", "25.57.89.188:4020"};
         Context.setContext(context, ":");
         //creating site.
         Site site = new Site(id);
-        System.out.println("Voudriez-vous etre le consommateur? Y or N");
+
+        //election.
+        int consommateurid = 1;
+
+        //
+
+        System.out.println("Etes vous le consommateur? Y or N");
         String rep = sc.nextLine();
         if (rep.equals("Y")) {
             Consommateur consommateur = new Consommateur(10);
             consommateur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
-            consommateur.initialize_Consumer(site.getId());
+            consommateur.initialize_Consommateur(consommateurid);
         } else {
             Producteur producteur = new Producteur(8);
             producteur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
-            producteur.initialize(site.getId());
+            producteur.initialize(consommateurid);
         }
     }
 }
