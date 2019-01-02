@@ -1,5 +1,6 @@
 package fr.SAR.projet;
 
+import fr.SAR.projet.election.Election;
 import fr.SAR.projet.producteurConsommateur.Consommateur;
 import fr.SAR.projet.producteurConsommateur.Producteur;
 
@@ -40,7 +41,7 @@ public class App {
 
     private static int election(int id,boolean participate){
         int elect = 0;
-        //election.
+        Election election;
         return elect;
     }
 
