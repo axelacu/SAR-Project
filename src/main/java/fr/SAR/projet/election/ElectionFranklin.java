@@ -32,16 +32,7 @@ public class ElectionFranklin {
     ObjectOutputStream outPredecessor;
 	private int siteid;
 	private int idPred;
-	
-	/*public Election(int siteid) {
-		this.siteid = siteid;
-		outSuccessor = site.getOutSuccessor();
-		inPredecessor = site.getInPredecessor();
-		inSuccessor = site.getInSuccesor();
-		predecesseur = site.getPredecesseur();
-		// creer objectoutputstream
-	}*/
-	
+
 	public ElectionFranklin(int siteid, int idPred, OutputStream outSuccessor, InputStream inPredecessor, InputStream inSuccessor, OutputStream OutputStream, boolean initiator){
         try {
             etat = Etat.Repos;
@@ -60,9 +51,6 @@ public class ElectionFranklin {
 	
 		
 	public int leader() {
-			//PrintWriter pwPredecessor = new PrintWriter (predecesseur.getOutputStream());
-			//PrintWriter pwSuccessor = new PrintWriter(outSuccessor);
-			
 			
 			if(etat == etat.Repos) {
 				etat = etat.en_cours;
@@ -219,12 +207,16 @@ public class ElectionFranklin {
 	    
 	    public int initializeElectionFranklin(){
 	        Thread srdp=new Thread(callSRDpredecessor());
-	        srdp.start();
+	        Thread srds=new Thread(callSRDsuccessor());
+	    
+	        	srdp.start();
+	        	srds.start();
 	        if (this.initiator){
 	            leader();
 	        }
 	        try{
 	            srdp.join();
+	            srds.join();
 
 	        }catch (Exception e){
 	            System.out.println("Probleme Leader");
