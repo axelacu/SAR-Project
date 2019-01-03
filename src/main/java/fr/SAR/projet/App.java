@@ -12,8 +12,8 @@ import java.util.Scanner;
  * Main application
  */
 public class App {
-   //static String[] context = new String[]{"25.57.89.188:4020", "25.57.89.188:4020", "25.57.89.188:4020"};
-	static String[] context = new String[]{"25.46.150.102:4020", "25.46.130.120:4020", "25.57.89.188:4020"};
+   //static String[] context = new String[]{"25.57.89.188:4020", "25.57.89.188:4021", "25.57.89.188:4022"};
+	static String[] context = new String[]{"25.46.150.102:4020", "25.46.130.120:4020", "25.57.89.188:4022:4020", "25.84.72.231:4020"};
     public static void main(String[] args) {
         launch();
     }
@@ -28,8 +28,7 @@ public class App {
     private static int electionFranklin(Site site, boolean participate) {
     		int elu = 0;
 
-    		int idPred = site.getIdPred(); // retourne id du site precedent
-
+    		int idPred = Context.idPredecesseur(site.getId()); // retourne id du site precedent
     		ElectionFranklin electionFranklin;
             electionFranklin = new ElectionFranklin(site.getId(),idPred,site.getoOutSucessor(), site.getoInPredecessor(), site.getoInSucessor(), site.getoOutPredecessor(), participate);
             elu = electionFranklin.initializeElectionFranklin();
@@ -45,14 +44,14 @@ public class App {
         int id = Integer.parseInt(sc.nextLine());
         String nickName;
         Context.setContext(context, ":");
-        do{
-            System.out.println("Give a nick name please : ");
-            nickName = sc.nextLine();
-        }while (nickName==null);
-
+        //do{
+          //  System.out.println("Give a nick name please : ");
+         //   nickName = sc.nextLine();
+        //}while (nickName==null);
+        nickName = "nonickname";
         //creating site.
         Site site = new Site(id);
-
+       
         int leader;
         String rep;
         do{
