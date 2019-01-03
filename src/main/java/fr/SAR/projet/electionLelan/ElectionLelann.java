@@ -18,13 +18,9 @@ public class ElectionLelann {
     int chef;
     Vector<Integer> liste;
     int id;
-    public ElectionLelann(int id, OutputStream out, InputStream in){
-        try {
-            successor = new ObjectOutputStream(out);
-            predecessor = new ObjectInputStream(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public ElectionLelann(int id, ObjectOutputStream out, ObjectInputStream in){
+        successor = out;
+        predecessor = in;
         etat = Etat.Repos;
         this.id = id;
         liste = new Vector<>();
@@ -123,11 +119,10 @@ public class ElectionLelann {
 
     public int initialize(boolean participate){
         Thread thSrd = new Thread(callSRD());
+        thSrd.start();
         if(participate){
             id = leader();
         }
-
-        thSrd.start();
 
         try {
             thSrd.join();
@@ -135,5 +130,10 @@ public class ElectionLelann {
             e.printStackTrace();
         }
         return chef;
+    }
+
+    public void close(){
+        predecessor = null;
+        successor = null;
     }
 }

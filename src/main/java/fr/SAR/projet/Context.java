@@ -1,9 +1,7 @@
 package fr.SAR.projet;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 /**
  * Define the context of th current problem
@@ -15,6 +13,7 @@ public class Context {
     private static int indexPort = 1;
     static String regex = ":";
     static int portConsumer = 4010;
+    static int election = 1;
 
     /**
      * Return the port that will be use for the server of consumer.
@@ -88,5 +87,9 @@ public class Context {
     public static int idPredecesseur(int id) {
         int size = context.length;
         return (0 == id ? size - 1 : id - 1);
+    }
+
+    public static void setElection(int election) {
+        Context.election = election;
     }
 }
