@@ -139,11 +139,11 @@ public class ElectionFranklin {
 			} else {
 				etat = etat.attente;
 				System.out.println("Etat : " + etat);
-				Requete req = new Requete(requete.getSiteId());
+				Requete req2 = new Requete(requete.getSiteId());
 				if(j == this.idPred) {
-					envoyer_a(outSuccessor, req);
+					envoyer_a(outSuccessor, req2);
 				} else {
-					envoyer_a(outPredecessor, req);
+					envoyer_a(outPredecessor, req2);
 				}
 			}
 		} else if(req instanceof Confirmation) {
