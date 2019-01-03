@@ -26,7 +26,14 @@ public class Site {
     private OutputStream outPrecessor;
     private int idPred;
 
-	/**
+    private ObjectInputStream oInPredecessor;
+    private ObjectOutputStream oOutSucessor;
+    private ObjectOutputStream oOutPredecessor;
+    private ObjectInputStream oInSucessor;
+
+
+
+    /**
      * Permet de creer un site qui heberge un serveur pour un successeur et qui se connecte à predecesseur.
      *
      * @param id
@@ -58,15 +65,20 @@ public class Site {
             outPrecessor = predecesseur.getOutputStream();
             inSuccesor = successor.getInputStream();
             inPredecessor = predecesseur.getInputStream();
-            
-          
+            oOutSucessor = new ObjectOutputStream(outSuccessor);
+            oInPredecessor = new ObjectInputStream(inPredecessor);
+            oOutPredecessor = new ObjectOutputStream(outPrecessor);
+            oInSucessor = new ObjectInputStream(inSuccesor);
+
+
+
 
         } catch (IOException e) {
             System.err.println("Error connecting the Input and outpur Stream");
         }
-        
-   
-        
+
+
+
         System.out.println("*** Well DONE connection established ***");
     }
 
@@ -153,8 +165,8 @@ public class Site {
         }
 
     }
-    
-    
+
+
     public int getIdPred() {
 		return idPred;
 	}
@@ -162,4 +174,19 @@ public class Site {
 	public void setIdPred(int idPred) {
 		this.idPred = idPred;
 	}
+    public ObjectInputStream getoInPredecessor() {
+        return oInPredecessor;
+    }
+
+    public ObjectOutputStream getoOutSucessor() {
+        return oOutSucessor;
+    }
+
+    public ObjectInputStream getoInSucessor() {
+        return oInSucessor;
+    }
+
+    public ObjectOutputStream getoOutPredecessor() {
+        return oOutPredecessor;
+    }
 }
