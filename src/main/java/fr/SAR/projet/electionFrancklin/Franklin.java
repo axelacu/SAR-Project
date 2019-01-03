@@ -154,12 +154,14 @@ public class Franklin {
             while(etat != Etat.termine){
                 Object object = input.readObject();
                 if(object != null){
-                    System.out.println("Requete recu.");
+
                     if(object instanceof Confirmation){
+                        System.out.println("Confirmation recu.");
                         Confirmation conf = (Confirmation) object;
                         sur_reception_de(conf);
                     }
                     if(object instanceof Requete){
+                        System.out.println("Requete recu.");
                         Requete req = (Requete) object;
                         sur_reception_de(req);
                     }
