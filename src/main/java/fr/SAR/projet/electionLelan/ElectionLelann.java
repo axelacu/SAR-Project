@@ -124,11 +124,6 @@ public class ElectionLelann {
             id = leader();
         }
 
-        try {
-            thSrd.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return chef;
     }
 
