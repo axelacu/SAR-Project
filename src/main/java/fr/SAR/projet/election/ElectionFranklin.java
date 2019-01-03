@@ -53,12 +53,12 @@ public class ElectionFranklin {
 		
 	public int leader() {
 			
-			if(etat == etat.Repos) {
-				etat = etat.en_cours;
+			if(etat == Etat.Repos) {
+				etat = Etat.en_cours;
 				System.out.println("Etat : " + etat);
 				concav = siteid;
 				chef = siteid;
-				while(etat == etat.en_cours){
+				while(etat == Etat.en_cours){
 			
 					nbreq = 0;
 					if(concav != siteid) {
@@ -96,7 +96,7 @@ public class ElectionFranklin {
 				
 			}
 			
-			 while(etat != etat.termine){
+			 while(etat != Etat.termine){
 		            try {
 		                sleep(1000);
 		            } catch (InterruptedException e) {
@@ -113,10 +113,10 @@ public class ElectionFranklin {
 			int j = ((Requete) req).getPrecedent();
 			Requete requete = (Requete)req;
 			System.out.println("site " + siteid + " recois la requete : " + requete.getSiteId() + " du site " + j );
-			if(etat == etat.Repos || requete.getSiteId() < chef) {
+			if(etat == Etat.Repos || requete.getSiteId() < chef) {
 				chef = requete.getSiteId();
 			} 
-			if(etat == etat.en_cours){
+			if(etat == Etat.en_cours){
 				if(nbreq == 0) {
 					conc=requete.getSiteId();
 					nbreq=1;
@@ -239,16 +239,8 @@ public class ElectionFranklin {
 	        }catch (Exception e){
 	            System.out.println("Probleme Leader");
 	            e.printStackTrace();
-	        }finally {
-	            try{
-	               // outSuccessor.close();
-	                //inPredecessor.close();
-	                //inSuccessor.close();
-	                //outPredecessor.close();
-	            }catch (Exception e){
-	                System.out.println("Probleme fermeture du canal du successeur");
-	            }
 	        }
+	        
 	        System.out.println("CHEF : " + this.chef);
 	        return this.chef;
 
