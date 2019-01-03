@@ -61,4 +61,13 @@ public class ElectionCR {
             envoyer_a(new Confirmation(id));
         }
     }
+
+    public void sur_reception_de(Confirmation conf){
+        if(id==conf.getConf()){
+            envoyer_a(conf);
+            etat = Etat.termine;
+        }
+    }
+
+
 }
