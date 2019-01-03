@@ -139,11 +139,11 @@ public class ElectionFranklin {
 			} else {
 				etat = etat.attente;
 				System.out.println("Etat : " + etat);
-				Requete req2 = new Requete(requete.getSiteId());
+				Confirmation confirm = new Confirmation(requete.getSiteId());
 				if(j == this.idPred) {
-					envoyer_a(outSuccessor, req2);
+					envoyer_a(outSuccessor, confirm);
 				} else {
-					envoyer_a(outPredecessor, req2);
+					envoyer_a(outPredecessor, confirm);
 				}
 			}
 		} else if(req instanceof Confirmation) {
@@ -186,7 +186,6 @@ public class ElectionFranklin {
 	                    while(etat != etat.termine){
 	                   
 	                    		Object object = inPredecessor.readObject();
-	                    	
 	                    		if(object!=null){
 	                                ToSend message = (ToSend) object;
 	                                sur_reception_de(message);
@@ -207,7 +206,7 @@ public class ElectionFranklin {
 	                try {
 	                    while(etat != etat.termine){
 	                    		Object object = inSuccessor.readObject();
-	                    	
+	                    		
 	                    		if(object!=null){
 	                                ToSend message = (ToSend) object;
 	                                sur_reception_de(message);
