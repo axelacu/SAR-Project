@@ -10,7 +10,7 @@ import java.util.Scanner;
  * Main application
  */
 public class App {
-    static String[] context = new String[]{"25.46.150.102:4020", "25.46.130.120:4020"};
+    static String[] context = new String[]{"25.46.150.102:4013", "25.46.150.102:4015","25.46.150.102:4016"};
 
     public static void main(String[] args) {
         launch();
@@ -20,6 +20,7 @@ public class App {
         int elect ;
         Election election = new Election(site.getId(),site.getOutSuccessor(),site.getInPredecessor(),participate);
         elect = election.initializeElection();
+        System.out.println("On a fini l'election");
         return elect;
     }
 
@@ -49,6 +50,7 @@ public class App {
             }else{
                 leader = election(site,false);
             }
+            System.out.println("Le consommateur elu est: "+leader);
 
             if(site.getId() == leader){
                 site.setConsumer(true);
@@ -56,11 +58,11 @@ public class App {
                 site.setConsumer(false);
             }
             if (site.isConsumer()) {
-                Consommateur consommateur = new Consommateur(3);
+                Consommateur consommateur = new Consommateur(10);
                 consommateur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
                 consommateur.initialize_Consumer(leader);
             } else {
-                Producteur producteur = new Producteur(3,nickName);
+                Producteur producteur = new Producteur(10,nickName);
                 producteur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
                 producteur.initialize(leader);
             }

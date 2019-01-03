@@ -1,6 +1,5 @@
+
 package fr.SAR.projet.producteurConsommateur;
-
-
 import java.util.*;
 import java.io.*;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import fr.SAR.projet.serveurclient.Serveur;
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
 import fr.SAR.projet.message.ToSend;
-
 import static java.lang.Thread.sleep;
 
 
@@ -114,6 +112,7 @@ public class Consommateur {
                         System.out.println(T[inc].getMessage());
                         inc = (inc + 1) % N;
                         this.NbMess++;
+                        System.out.println("The message number has been increased");
                     }
                 }
             }
@@ -121,8 +120,10 @@ public class Consommateur {
                 synchronized (monitorJeton) {
                     synchronized (monitorNbCell) {
                         Jeton jeton = (Jeton) toSend;
+                        System.out.println("Before change :" + jeton.getVal());
                         jeton.setVal(jeton.getVal() + this.NbCell);
                         this.NbCell=0;
+                        System.out.println("After change :" + jeton.getVal());
                         envoyer_a(outOSuccesseur, jeton);
                     }
                 }
@@ -140,20 +141,20 @@ public class Consommateur {
     public  void consommer(){
         int a;
         if (this.NbMess > 0) {
-                synchronized (monitorNbMess) {
-                    synchronized (monitorNbCell) {
-                        System.out.println("Je consomme le message:  ");
-                        System.out.println(T[outc].getMessage());
-                        if(T[outc].equals("Consommer please")){
-                            //TODO: relancer l'election
-                        }
-                        T[outc]=null; //supprimer le message
-                        outc = (outc + 1) % N;
-                        this.NbMess--;
-                        this.NbCell++;
+            synchronized (monitorNbMess) {
+                synchronized (monitorNbCell) {
+                    System.out.println("Je consomme le message:  ");
+                    System.out.println(T[outc].getMessage());
+                    if(T[outc].equals("Consommer please")){
+                        //TODO: relancer l'election
                     }
+                    T[outc]=null; //supprimer le message
+                    outc = (outc + 1) % N;
+                    this.NbMess--;
+                    this.NbCell++;
                 }
             }
+        }
     }
 
 
@@ -167,6 +168,7 @@ public class Consommateur {
                         Object object = inOpredecesseur.readObject();
                         if(object!=null){
                             Jeton jeton = (Jeton) object;
+                            System.out.println("**** Le jeton a été reçu ****");
                             Sur_Reception_De(jeton);
                         }
                         sleep(1000);
@@ -198,6 +200,7 @@ public class Consommateur {
     public void envoyer_a(ObjectOutputStream outOSuccesseur, Jeton content){
         try {
             outOSuccesseur.writeObject(content);
+            System.out.println("Le consomateur a envoyer le jeton");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -216,23 +219,24 @@ public class Consommateur {
                 return;
             }
 
-           Serveur serveur = new Serveur(Context.getAddress(id), Context.getportConsumer());
-           Jeton jeton=new Jeton(N);
-           envoyer_a(outOSuccesseur,jeton);
-           Thread threadJeton=new Thread(callSRDJeton());
-           threadJeton.start();
-           Thread consumer=new Thread(callConsommer());
-           consumer.start();
+            Serveur serveur = new Serveur(Context.getAddress(id), Context.getportConsumer());
+            Jeton jeton=new Jeton(N);
+            envoyer_a(outOSuccesseur,jeton);
+            Thread threadJeton=new Thread(callSRDJeton());
+            threadJeton.start();
+            Thread consumer=new Thread(callConsommer());
+            System.out.println("je peux consommer");
+            consumer.start();
 
 
-           for (int i = 0; i < Context.getContext().length; i++) {
-               if(i==id) continue;
-               Socket soc = serveur.ajoutClient();
-               ThreadProducteur threadProducteur=new ThreadProducteur(soc,"producteur"+i,this);
-               threadProducteur.start();
+            for (int i = 0; i < Context.getContext().length; i++) {
+                if(i==id) continue;
+                Socket soc = serveur.ajoutClient();
+                ThreadProducteur threadProducteur=new ThreadProducteur(soc,"producteur"+i,this);
+                threadProducteur.start();
 
             }
-           System.out.println("Well Done; all connection etablished");
+            System.out.println("Well Done; all connection etablished");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -245,3 +249,4 @@ public class Consommateur {
 
 
 }
+

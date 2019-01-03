@@ -1,5 +1,7 @@
 package fr.SAR.projet;
 
+import fr.SAR.projet.ElectionUnidirectionelle.Election;
+
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -24,6 +26,8 @@ public class Context {
     public static int getportConsumer() {
         return portConsumer;
     }
+
+
 
     public static void setContext(String[] sites) {
         context = sites;

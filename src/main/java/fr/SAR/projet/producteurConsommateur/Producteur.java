@@ -258,7 +258,7 @@ public class Producteur extends Thread {
             if (answer.equals("Y")) {
                 Message message;
                 synchronized (monitorSender) {
-                   message = writeMessage(sc);
+                    message = writeMessage(sc);
                 }
                 Thread prodMess = new Thread(callProd(message));
                 prodMess.start();
