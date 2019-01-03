@@ -35,8 +35,10 @@ public class ThreadProducteur extends Thread{
                     while(true) {
                         Object object = in.readObject();
                         if(object!=null){
-                            Message message = (Message) object;
-                            consommateur.Sur_Reception_De(message);
+                            if(object instanceof Message) {
+                                Message message = (Message) object;
+                                consommateur.Sur_Reception_De(message);
+                            }
                         }
                         sleep(1000);
                     }
@@ -48,9 +50,6 @@ public class ThreadProducteur extends Thread{
             }
         };
     }
-
-
-
 
     @Override
     public void run() {

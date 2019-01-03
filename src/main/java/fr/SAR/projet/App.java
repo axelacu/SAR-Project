@@ -1,6 +1,7 @@
 package fr.SAR.projet;
 
 import fr.SAR.projet.ElectionUnidirectionelle.Election;
+import fr.SAR.projet.electionLelan.ElectionLelann;
 import fr.SAR.projet.producteurConsommateur.Consommateur;
 import fr.SAR.projet.producteurConsommateur.Producteur;
 
@@ -10,16 +11,31 @@ import java.util.Scanner;
  * Main application
  */
 public class App {
-    static String[] context = new String[]{"25.46.150.102:4020", "25.46.130.120:4020"};
+    static String[] context = new String[]{"192.168.1.28:4020", "192.168.56.1:4020"};
 
     public static void main(String[] args) {
         launch();
     }
 
     private static int election(Site site, boolean participate){
-        int elect ;
-        Election election = new Election(site.getId(),site.getOutSuccessor(),site.getInPredecessor(),participate);
-        elect = election.initializeElection();
+        int elect = 0;
+        System.out.println("*** L'election a été lancée ");
+        switch (Context.election){
+            case 0:
+                Election election = new Election(site.getId(),site.getOutSuccessor(),site.getInPredecessor(),participate);
+                elect = election.initializeElection();
+                System.out.println("Le chef a été elu il correspond a : " + elect );
+                break;
+            case 1:
+                ElectionLelann el = new ElectionLelann(site.getId(),site.getoOutSucessor(),site.getoInPredecessor());
+                elect = el.initialize(participate);
+                System.out.println("Le chef a été elu il correspond a : " + elect);
+                el.close();
+                break;
+            case 2:
+                //corentin
+                break;
+        }
         return elect;
     }
 
@@ -57,11 +73,11 @@ public class App {
             }
             if (site.isConsumer()) {
                 Consommateur consommateur = new Consommateur(3);
-                consommateur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
+                consommateur.setJetonContext(site.getoOutSucessor(), site.getoInPredecessor());
                 consommateur.initialize_Consumer(leader);
             } else {
                 Producteur producteur = new Producteur(3,nickName);
-                producteur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
+                producteur.setJetonContext(site.getoOutSucessor(), site.getoInPredecessor());
                 producteur.initialize(leader);
             }
 

@@ -57,20 +57,12 @@ public class Consommateur {
 
 
 
-    private void setSuccesseur(OutputStream outSuccessor) {
-        try {
-            outOSuccesseur = new ObjectOutputStream(outSuccessor);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void setSuccesseur(ObjectOutputStream outSuccessor) {
+        outOSuccesseur = outSuccessor;
     }
 
-    private void setPredecesseur(InputStream inPredecessor) {
-        try {
-            inOpredecesseur = new ObjectInputStream(inPredecessor);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void setPredecesseur(ObjectInputStream inPredecessor) {
+        inOpredecesseur = inPredecessor;
     }
 
     /**
@@ -80,7 +72,7 @@ public class Consommateur {
      */
 
 
-    public void setJetonContext(OutputStream successor,InputStream predecessor){
+    public void setJetonContext(ObjectOutputStream successor,ObjectInputStream predecessor){
         this.setSuccesseur(successor);
         this.setPredecesseur(predecessor);
     }
@@ -166,8 +158,10 @@ public class Consommateur {
                     while(true){
                         Object object = inOpredecesseur.readObject();
                         if(object!=null){
-                            Jeton jeton = (Jeton) object;
-                            Sur_Reception_De(jeton);
+                            if(object instanceof Jeton) {
+                                Jeton jeton = (Jeton) object;
+                                Sur_Reception_De(jeton);
+                            }
                         }
                         sleep(1000);
                     }
@@ -239,9 +233,4 @@ public class Consommateur {
 
 
     }
-
-
-
-
-
 }
