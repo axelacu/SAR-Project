@@ -139,11 +139,11 @@ public class ElectionFranklin {
 			} else {
 				etat = etat.attente;
 				System.out.println("Etat : " + etat);
-				Confirmation confirm = new Confirmation(requete.getSiteId());
+				Requete req = new Requete(requete.getSiteId());
 				if(j == this.idPred) {
-					envoyer_a(outSuccessor, confirm);
+					envoyer_a(outSuccessor, req);
 				} else {
-					envoyer_a(outPredecessor, confirm);
+					envoyer_a(outPredecessor, req);
 				}
 			}
 		} else if(req instanceof Confirmation) {
@@ -151,7 +151,7 @@ public class ElectionFranklin {
 			System.out.println("site " + siteid + " recois la confirmation : " + conf.getConf());
 			if(siteid != conf.getConf()) {
 				System.out.println("Envoie de la confirmation");
-				envoyer_a(outSuccessor, new Requete(conf.getConf()));
+				envoyer_a(outSuccessor, new Confirmation(conf.getConf()));
 				etat = etat.termine;
 				System.out.println("Etat : " + etat);
 			}
