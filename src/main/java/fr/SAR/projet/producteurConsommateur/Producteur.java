@@ -108,20 +108,13 @@ public class Producteur extends Thread {
         }
     }
 
-    private void setSuccesseur(OutputStream outSuccessor) {
-        try {
-            outOSuccesseur = new ObjectOutputStream(outSuccessor);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void setSuccesseur(ObjectOutputStream outSuccessor) {
+        outOSuccesseur = outSuccessor;
+
     }
 
-    private void setPredecesseur(InputStream inPredecessor) {
-        try {
-            inOpredecesseur = new ObjectInputStream(inPredecessor);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void setPredecesseur(ObjectInputStream inPredecessor) {
+        inOpredecesseur = inPredecessor;
     }
 
     public void setConsommateur(Socket consommateur) {
@@ -185,8 +178,8 @@ public class Producteur extends Thread {
             System.out.println(socket.getInetAddress());
             System.out.println("Connexion accepte");
             Producteur producteur = new Producteur(10);
-            producteur.setSuccesseur(socket.getOutputStream());
-            producteur.setPredecesseur(socket.getInputStream());
+            //producteur.setSuccesseur(socket.getOutputStream());
+            //producteur.setPredecesseur(socket.getInputStream());
             Thread th = new Thread(producteur.callSRD());
             th.start();
             while (true){
@@ -198,7 +191,7 @@ public class Producteur extends Thread {
     }
 
 
-    public void setJetonContext(OutputStream successeur,InputStream predecesseur){
+    public void setJetonContext(ObjectOutputStream successeur,ObjectInputStream predecesseur){
         this.setSuccesseur(successeur);
         this.setPredecesseur(predecesseur);
     }
@@ -258,7 +251,7 @@ public class Producteur extends Thread {
             if (answer.equals("Y")) {
                 Message message;
                 synchronized (monitorSender) {
-                   message = writeMessage(sc);
+                    message = writeMessage(sc);
                 }
                 Thread prodMess = new Thread(callProd(message));
                 prodMess.start();

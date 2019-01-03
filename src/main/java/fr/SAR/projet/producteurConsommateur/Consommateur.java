@@ -57,20 +57,12 @@ public class Consommateur {
 
 
 
-    private void setSuccesseur(OutputStream outSuccessor) {
-        try {
-            outOSuccesseur = new ObjectOutputStream(outSuccessor);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void setSuccesseur(ObjectOutputStream outSuccessor) {
+        outOSuccesseur = outSuccessor;
     }
 
-    private void setPredecesseur(InputStream inPredecessor) {
-        try {
-            inOpredecesseur = new ObjectInputStream(inPredecessor);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void setPredecesseur(ObjectInputStream inPredecessor) {
+        inOpredecesseur = inPredecessor;
     }
 
     /**
@@ -80,7 +72,7 @@ public class Consommateur {
      */
 
 
-    public void setJetonContext(OutputStream successor,InputStream predecessor){
+    public void setJetonContext(ObjectOutputStream successor,ObjectInputStream predecessor){
         this.setSuccesseur(successor);
         this.setPredecesseur(predecessor);
     }
@@ -140,20 +132,20 @@ public class Consommateur {
     public  void consommer(){
         int a;
         if (this.NbMess > 0) {
-                synchronized (monitorNbMess) {
-                    synchronized (monitorNbCell) {
-                        System.out.println("Je consomme le message:  ");
-                        System.out.println(T[outc].getMessage());
-                        if(T[outc].equals("Consommer please")){
-                            //TODO: relancer l'election
-                        }
-                        T[outc]=null; //supprimer le message
-                        outc = (outc + 1) % N;
-                        this.NbMess--;
-                        this.NbCell++;
+            synchronized (monitorNbMess) {
+                synchronized (monitorNbCell) {
+                    System.out.println("Je consomme le message:  ");
+                    System.out.println(T[outc].getMessage());
+                    if(T[outc].equals("Consommer please")){
+                        //TODO: relancer l'election
                     }
+                    T[outc]=null; //supprimer le message
+                    outc = (outc + 1) % N;
+                    this.NbMess--;
+                    this.NbCell++;
                 }
             }
+        }
     }
 
 
@@ -166,8 +158,10 @@ public class Consommateur {
                     while(true){
                         Object object = inOpredecesseur.readObject();
                         if(object!=null){
-                            Jeton jeton = (Jeton) object;
-                            Sur_Reception_De(jeton);
+                            if(object instanceof Jeton) {
+                                Jeton jeton = (Jeton) object;
+                                Sur_Reception_De(jeton);
+                            }
                         }
                         sleep(1000);
                     }
@@ -216,32 +210,27 @@ public class Consommateur {
                 return;
             }
 
-           Serveur serveur = new Serveur(Context.getAddress(id), Context.getportConsumer());
-           Jeton jeton=new Jeton(N);
-           envoyer_a(outOSuccesseur,jeton);
-           Thread threadJeton=new Thread(callSRDJeton());
-           threadJeton.start();
-           Thread consumer=new Thread(callConsommer());
-           consumer.start();
+            Serveur serveur = new Serveur(Context.getAddress(id), Context.getportConsumer());
+            Jeton jeton=new Jeton(N);
+            envoyer_a(outOSuccesseur,jeton);
+            Thread threadJeton=new Thread(callSRDJeton());
+            threadJeton.start();
+            Thread consumer=new Thread(callConsommer());
+            consumer.start();
 
 
-           for (int i = 0; i < Context.getContext().length; i++) {
-               if(i==id) continue;
-               Socket soc = serveur.ajoutClient();
-               ThreadProducteur threadProducteur=new ThreadProducteur(soc,"producteur"+i,this);
-               threadProducteur.start();
+            for (int i = 0; i < Context.getContext().length; i++) {
+                if(i==id) continue;
+                Socket soc = serveur.ajoutClient();
+                ThreadProducteur threadProducteur=new ThreadProducteur(soc,"producteur"+i,this);
+                threadProducteur.start();
 
             }
-           System.out.println("Well Done; all connection etablished");
+            System.out.println("Well Done; all connection etablished");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
     }
-
-
-
-
-
 }

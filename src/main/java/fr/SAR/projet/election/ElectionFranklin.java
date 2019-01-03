@@ -33,16 +33,16 @@ public class ElectionFranklin {
 	private int siteid;
 	private int idPred;
 
-	public ElectionFranklin(int siteid, int idPred, OutputStream outSuccessor, InputStream inPredecessor, InputStream inSuccessor, OutputStream OutputStream, boolean initiator){
+	public ElectionFranklin(int siteid, int idPred, ObjectOutputStream outSuccessor, ObjectInputStream inPredecessor, ObjectInputStream inSuccessor, ObjectOutputStream outPredecessor, boolean initiator){
         try {
             etat = Etat.Repos;
             this.siteid = siteid;
             this.idPred = idPred;
             this.initiator = initiator;
-            this.outSuccessor = new ObjectOutputStream(outSuccessor);
-            this.inPredecessor=new ObjectInputStream(inPredecessor);
-            this.inSuccessor = new ObjectInputStream(inSuccessor);
-            this.outPredecessor=new ObjectOutputStream(outPredecessor);
+            this.outSuccessor = outSuccessor;
+            this.inPredecessor=inPredecessor;
+            this.inSuccessor = inSuccessor;
+            this.outPredecessor=outPredecessor;
             this.chef = -1;
         }catch(Exception e){
             e.printStackTrace();

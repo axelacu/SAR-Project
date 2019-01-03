@@ -31,13 +31,8 @@ public class App {
     		int idPred = site.getIdPred(); // retourne id du site precedent
 
     		ElectionFranklin electionFranklin;
-			try {
-				electionFranklin = new ElectionFranklin(site.getId(),idPred,site.getOutSuccessor(), site.getInPredecessor(), site.getInSuccesor(), site.getPredecesseur().getOutputStream(), participate);
-				elu = electionFranklin.initializeElectionFranklin();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+            electionFranklin = new ElectionFranklin(site.getId(),idPred,site.getoOutSucessor(), site.getoInPredecessor(), site.getoInSucessor(), site.getoOutPredecessor(), participate);
+            elu = electionFranklin.initializeElectionFranklin();
     		
     		return elu;
     }
@@ -76,11 +71,11 @@ public class App {
             }
             if (site.isConsumer()) {
                 Consommateur consommateur = new Consommateur(3);
-                consommateur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
+                consommateur.setJetonContext(site.getoOutSucessor(), site.getoInPredecessor());
                 consommateur.initialize_Consumer(leader);
             } else {
                 Producteur producteur = new Producteur(3,nickName);
-                producteur.setJetonContext(site.getOutSuccessor(), site.getInPredecessor());
+                producteur.setJetonContext(site.getoOutSucessor(), site.getoInPredecessor());
                 producteur.initialize(leader);
             }
 
