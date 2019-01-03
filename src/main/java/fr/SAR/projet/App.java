@@ -46,11 +46,11 @@ public class App {
         int id = Integer.parseInt(sc.nextLine());
         String nickName;
         Context.setContext(context, ":");
-        //do{
-          //  System.out.println("Give a nick name please : ");
-         //   nickName = sc.nextLine();
-        //}while (nickName==null);
-        nickName = "nonickname";
+        do{
+            System.out.println("Give a nick name please : ");
+           nickName = sc.nextLine();
+        }while (nickName==null);
+        
         //creating site.
         Site site = new Site(id);
        
