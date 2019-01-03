@@ -33,6 +33,7 @@ public class ElectionFranklin {
 	private int siteid;
 	private int idPred;
 
+
 	public ElectionFranklin(int siteid, int idPred, ObjectOutputStream outSuccessor, ObjectInputStream inPredecessor, ObjectInputStream inSuccessor, ObjectOutputStream outPredecessor, boolean initiator){
         try {
             etat = Etat.Repos;
