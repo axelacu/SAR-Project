@@ -20,7 +20,7 @@ public class App {
 
     private static int election(Site site, boolean participate){
         int elect = 0;
-        System.out.println("*** L'election a été lancée ");
+        System.out.println("*** L'election a été lancée ****");
         switch (Context.election){
             case 0:
                 Election election = new Election(site.getId(),site.getOutSuccessor(),site.getInPredecessor(),participate);
