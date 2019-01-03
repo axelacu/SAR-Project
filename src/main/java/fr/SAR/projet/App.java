@@ -10,7 +10,7 @@ import java.util.Scanner;
  * Main application
  */
 public class App {
-    static String[] context = new String[]{"25.46.150.102:4013", "25.46.150.102:4015","25.46.150.102:4016"};
+    static String[] context = new String[]{"25.46.150.102:4013", "25.46.130.120:4013","25.57.89.188:4013"};
 
     public static void main(String[] args) {
         launch();
