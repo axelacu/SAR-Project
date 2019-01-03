@@ -24,7 +24,6 @@ public class Site {
     private InputStream inPredecessor;
     private InputStream inSuccesor;
     private OutputStream outPrecessor;
-    private int idPred;
 
     private ObjectInputStream oInPredecessor;
     private ObjectOutputStream oOutSucessor;
@@ -166,14 +165,6 @@ public class Site {
 
     }
 
-
-    public int getIdPred() {
-		return idPred;
-	}
-
-	public void setIdPred(int idPred) {
-		this.idPred = idPred;
-	}
     public ObjectInputStream getoInPredecessor() {
         return oInPredecessor;
     }
