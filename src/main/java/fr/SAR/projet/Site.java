@@ -21,7 +21,9 @@ public class Site {
     private OutputStream outPrecessor;
 
     private ObjectInputStream oInPredecessor;
+    private ObjectInputStream oInSuccesor;
     private ObjectOutputStream oOutSucessor;
+    private ObjectOutputStream oOutPredecessor;
 
     /**
      * Permet de creer un site qui heberge un serveur pour un successeur et qui se connecte à predecesseur.
@@ -57,7 +59,8 @@ public class Site {
             inPredecessor = predecesseur.getInputStream();
             oOutSucessor = new ObjectOutputStream(outSuccessor);
             oInPredecessor = new ObjectInputStream(inPredecessor);
-
+            oOutPredecessor = new ObjectOutputStream(outPrecessor);
+            oInSuccesor = new ObjectInputStream(inSuccesor);
         } catch (IOException e) {
             System.err.println("Error connecting the Input and outpur Stream");
         }
@@ -153,5 +156,13 @@ public class Site {
 
     public ObjectOutputStream getoOutSucessor() {
         return oOutSucessor;
+    }
+
+    public ObjectInputStream getoInSuccesor() {
+        return oInSuccesor;
+    }
+
+    public ObjectOutputStream getoOutPredecessor() {
+        return oOutPredecessor;
     }
 }
