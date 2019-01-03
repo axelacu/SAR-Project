@@ -1,6 +1,7 @@
 package fr.SAR.projet;
 
 import fr.SAR.projet.ElectionUnidirectionelle.Election;
+import fr.SAR.projet.electionFrancklin.Franklin;
 import fr.SAR.projet.electionLelan.ElectionLelann;
 import fr.SAR.projet.producteurConsommateur.Consommateur;
 import fr.SAR.projet.producteurConsommateur.Producteur;
@@ -33,7 +34,9 @@ public class App {
                 el.close();
                 break;
             case 2:
-                //corentin
+                Franklin franklin = new Franklin(site.getId(),site.getoOutSucessor(),site.getoInPredecessor(),
+                                        site.getoOutPredecessor(),site.getoInSuccesor());
+                elect = franklin.initialize(participate);
                 break;
         }
         return elect;
