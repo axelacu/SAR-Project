@@ -52,7 +52,7 @@ public class ElectionFranklin {
 	
 		
 	public int leader() {
-			System.out.println("pre : " + idPred);
+			
 			if(etat == etat.Repos) {
 				etat = etat.en_cours;
 				System.out.println("Etat : " + etat);
@@ -70,11 +70,12 @@ public class ElectionFranklin {
 						concav = siteid;
 					}
 					System.out.println("Site " + siteid + " envoie à son successeur et predecesseur");
-					envoyer_a(outSuccessor, new Requete(siteid));
-					envoyer_a(outPredecessor, new Requete(siteid));
+					Requete req = new Requete(siteid);
+					envoyer_a(outSuccessor, req);
+					envoyer_a(outPredecessor, req);
 					
 					
-					while(nbreq != 2){
+					while(nbreq != 2){ 
 			            try {
 			                sleep(1000);
 			            } catch (InterruptedException e) {
@@ -114,12 +115,13 @@ public class ElectionFranklin {
 			System.out.println("site " + siteid + " recois la requete : " + requete.getSiteId() + " du site " + j );
 			if(etat == etat.Repos || requete.getSiteId() < chef) {
 				chef = requete.getSiteId();
-			} else if(etat == etat.en_cours){
+			} 
+			if(etat == etat.en_cours){
 				if(nbreq == 0) {
 					conc=requete.getSiteId();
 					nbreq=1;
 					dir = (j == this.idPred);
-				} else if((dir && j==this.idPred) || (!dir && j != this.idPred)) {
+				} else if((dir && j == this.idPred) || (!dir && j != this.idPred)) {
 					concav=requete.getSiteId();
 				} else {
 					nbreq = 2;
@@ -184,7 +186,7 @@ public class ElectionFranklin {
 	                    while(etat != etat.termine){
 	                   
 	                    		Object object = inPredecessor.readObject();
-
+	                    	
 	                    		if(object!=null){
 	                                ToSend message = (ToSend) object;
 	                                sur_reception_de(message);
@@ -205,7 +207,7 @@ public class ElectionFranklin {
 	                try {
 	                    while(etat != etat.termine){
 	                    		Object object = inSuccessor.readObject();
-
+	                    	
 	                    		if(object!=null){
 	                                ToSend message = (ToSend) object;
 	                                sur_reception_de(message);
@@ -221,6 +223,7 @@ public class ElectionFranklin {
 	    
 	    
 	    public int initializeElectionFranklin(){
+	    		System.out.println("Etat : " + etat);
 	        Thread srdp=new Thread(callSRDpredecessor());
 	        Thread srds=new Thread(callSRDsuccessor());
 	        
@@ -230,6 +233,7 @@ public class ElectionFranklin {
 	            leader();
 	        }
 	        try{
+	        	
 	            srdp.join();
 	            srds.join();
 
@@ -246,6 +250,7 @@ public class ElectionFranklin {
 	                System.out.println("Probleme fermeture du canal du successeur");
 	            }
 	        }
+	        System.out.println("CHEF : " + this.chef);
 	        return this.chef;
 
 
