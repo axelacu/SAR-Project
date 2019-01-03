@@ -242,10 +242,10 @@ public class ElectionFranklin {
 	            e.printStackTrace();
 	        }finally {
 	            try{
-	                outSuccessor.close();
-	                inPredecessor.close();
-	                inSuccessor.close();
-	                outPredecessor.close();
+	               // outSuccessor.close();
+	                //inPredecessor.close();
+	                //inSuccessor.close();
+	                //outPredecessor.close();
 	            }catch (Exception e){
 	                System.out.println("Probleme fermeture du canal du successeur");
 	            }
