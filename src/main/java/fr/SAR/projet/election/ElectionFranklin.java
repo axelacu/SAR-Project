@@ -126,18 +126,18 @@ public class ElectionFranklin {
 				} else {
 					nbreq = 2;
 					if(chef<siteid) {
-						etat = etat.attente;
+						etat = Etat.attente;
 						System.out.println("Etat : " + etat);
 						
 					} else if(conc == siteid || requete.getSiteId() == conc) {
-						etat = etat.termine;
+						etat = Etat.termine;
 						System.out.println("Etat : " + etat);
 						System.out.println("Envoie de la confirmation");
 						envoyer_a(outSuccessor, new Confirmation(siteid)); // envoie de la confirmation
 					}
 				}
 			} else {
-				etat = etat.attente;
+				etat = Etat.attente;
 				System.out.println("Etat : " + etat);
 				Requete req2 = new Requete(requete.getSiteId());
 				if(j == this.idPred) {
@@ -152,7 +152,7 @@ public class ElectionFranklin {
 			if(siteid != conf.getConf()) {
 				System.out.println("Envoie de la confirmation");
 				envoyer_a(outSuccessor, new Confirmation(conf.getConf()));
-				etat = etat.termine;
+				etat = Etat.termine;
 				System.out.println("Etat : " + etat);
 			}
 			
@@ -183,7 +183,7 @@ public class ElectionFranklin {
 	        
 	                try {
 	                	
-	                    while(etat != etat.termine){
+	                    while(etat != Etat.termine){
 	                   
 	                    		Object object = inPredecessor.readObject();
 	                    		if(object!=null){
@@ -204,7 +204,7 @@ public class ElectionFranklin {
 	            @Override
 	            public void run() {
 	                try {
-	                    while(etat != etat.termine){
+	                    while(etat != Etat.termine){
 	                    		Object object = inSuccessor.readObject();
 	                    		
 	                    		if(object!=null){
