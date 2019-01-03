@@ -233,8 +233,8 @@ public class ElectionFranklin {
 	        }
 	        try{
 	        	
-	            srdp.join();
-	            srds.join();
+	           // srdp.join();
+	            //srds.join();
 
 	        }catch (Exception e){
 	            System.out.println("Probleme Leader");
