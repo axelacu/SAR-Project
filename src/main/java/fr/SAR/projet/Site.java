@@ -1,10 +1,13 @@
 package fr.SAR.projet;
 
+import fr.SAR.projet.message.ToSend;
 import fr.SAR.projet.serveurclient.Client;
 import fr.SAR.projet.serveurclient.Serveur;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -21,9 +24,9 @@ public class Site {
     private InputStream inPredecessor;
     private InputStream inSuccesor;
     private OutputStream outPrecessor;
+    private int idPred;
 
-
-    /**
+	/**
      * Permet de creer un site qui heberge un serveur pour un successeur et qui se connecte à predecesseur.
      *
      * @param id
@@ -55,10 +58,15 @@ public class Site {
             outPrecessor = predecesseur.getOutputStream();
             inSuccesor = successor.getInputStream();
             inPredecessor = predecesseur.getInputStream();
+            
+          
 
         } catch (IOException e) {
             System.err.println("Error connecting the Input and outpur Stream");
         }
+        
+   
+        
         System.out.println("*** Well DONE connection established ***");
     }
 
@@ -145,4 +153,13 @@ public class Site {
         }
 
     }
+    
+    
+    public int getIdPred() {
+		return idPred;
+	}
+
+	public void setIdPred(int idPred) {
+		this.idPred = idPred;
+	}
 }

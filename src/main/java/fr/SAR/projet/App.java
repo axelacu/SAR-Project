@@ -1,17 +1,19 @@
 package fr.SAR.projet;
 
 import fr.SAR.projet.ElectionUnidirectionelle.Election;
+import fr.SAR.projet.election.ElectionFranklin;
 import fr.SAR.projet.producteurConsommateur.Consommateur;
 import fr.SAR.projet.producteurConsommateur.Producteur;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
  * Main application
  */
 public class App {
-    static String[] context = new String[]{"25.46.150.102:4020", "25.46.130.120:4020"};
-
+   //static String[] context = new String[]{"25.57.89.188:4020", "25.57.89.188:4020", "25.57.89.188:4020"};
+	static String[] context = new String[]{"25.46.150.102:4020", "25.46.130.120:4020", "25.57.89.188:4020"};
     public static void main(String[] args) {
         launch();
     }
@@ -21,6 +23,23 @@ public class App {
         Election election = new Election(site.getId(),site.getOutSuccessor(),site.getInPredecessor(),participate);
         elect = election.initializeElection();
         return elect;
+    }
+    
+    private static int electionFranklin(Site site, boolean participate) {
+    		int elu = 0;
+
+    		int idPred = site.getIdPred(); // retourne id du site precedent
+
+    		ElectionFranklin electionFranklin;
+			try {
+				electionFranklin = new ElectionFranklin(site.getId(),idPred,site.getOutSuccessor(), site.getInPredecessor(), site.getInSuccesor(), site.getPredecesseur().getOutputStream(), participate);
+				elu = electionFranklin.initializeElectionFranklin();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    		return elu;
     }
 
     private static void launch(){
@@ -45,9 +64,9 @@ public class App {
             System.out.println("Voulez-vous participer à l'election des consommateurs? Y or N");
             rep = sc.nextLine();
             if(rep.equals("Y")){
-                leader = election(site,true);
+                leader = electionFranklin(site,true);
             }else{
-                leader = election(site,false);
+                leader = electionFranklin(site,false);
             }
 
             if(site.getId() == leader){
