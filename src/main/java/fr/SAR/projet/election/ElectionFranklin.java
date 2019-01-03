@@ -124,22 +124,15 @@ public class ElectionFranklin {
 				System.out.println("Etat : " + etat);
 				Requete req2 = new Requete(requete.getSiteId());
 				if(j == this.idPred) {
-					try {
-						envoyer_a(new ObjectOutputStream(outSuccessor), req2);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					envoyer_a(outSuccessor, req2);
 				} else {
-					try {
-						envoyer_a(new ObjectOutputStream(outSuccessor), req2);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					envoyer_a(outPredecessor, req2);
 				}
 			}
 		} else if(req instanceof Confirmation) {
 			Confirmation conf = (Confirmation)req;
 			if(siteid != conf.getConf()) {
+				System.out.println("Envoie de la confirmation");
 				envoyer_a(outSuccessor, new Requete(conf.getConf()));
 				etat = etat.termine;
 				System.out.println("Etat : " + etat);
