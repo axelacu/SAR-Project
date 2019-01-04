@@ -52,18 +52,8 @@ public class Site {
                 e.printStackTrace();
             }
         }
-        try {
-            outSuccessor = successor.getOutputStream();
-            outPrecessor = predecesseur.getOutputStream();
-            inSuccesor = successor.getInputStream();
-            inPredecessor = predecesseur.getInputStream();
-            oOutSucessor = new ObjectOutputStream(outSuccessor);
-            oInPredecessor = new ObjectInputStream(inPredecessor);
-            oOutPredecessor = new ObjectOutputStream(outPrecessor);
-            oInSuccesor = new ObjectInputStream(inSuccesor);
-        } catch (IOException e) {
-            System.err.println("Error connecting the Input and outpur Stream");
-        }
+
+        setIO();
         System.out.println("*** Well DONE connection established ***");
     }
 
@@ -164,5 +154,49 @@ public class Site {
 
     public ObjectOutputStream getoOutPredecessor() {
         return oOutPredecessor;
+    }
+
+    /**
+     * flush alls outs.
+     */
+    public void flush(){
+        try {
+            oOutPredecessor.flush();
+            oOutPredecessor.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Shutdown inputs
+     */
+    public void shutdownIn(){
+        try {
+            successor.shutdownInput();
+            predecesseur.getSserv().shutdownOutput();
+            predecesseur.getSserv().shutdownInput();
+            successor.shutdownOutput();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**set I/O**/
+    public void setIO(){
+        try {
+            outSuccessor = successor.getOutputStream();
+            outPrecessor = predecesseur.getOutputStream();
+            inSuccesor = successor.getInputStream();
+            inPredecessor = predecesseur.getInputStream();
+            oOutSucessor = new ObjectOutputStream(outSuccessor);
+            oInPredecessor = new ObjectInputStream(inPredecessor);
+            oOutPredecessor = new ObjectOutputStream(outPrecessor);
+            oInSuccesor = new ObjectInputStream(inSuccesor);
+        } catch (IOException e) {
+            System.err.println("Error connecting the Input and outpur Stream");
+        }
     }
 }

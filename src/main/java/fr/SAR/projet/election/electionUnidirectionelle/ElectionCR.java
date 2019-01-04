@@ -87,7 +87,7 @@ public class ElectionCR {
                     envoyer_a(successor, toSend);
                     this.etat = etat.termine;
                     forWait.notify();
-                    System.out.println(etat);
+                    //System.out.println(etat);
 
                 } else {
                     return;

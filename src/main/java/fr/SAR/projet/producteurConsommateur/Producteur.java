@@ -51,6 +51,10 @@ public class Producteur extends Thread {
         this.name = name;
     }
 
+    /**
+     * Fonction qui produit les messages.
+     * @param message
+     */
     public void produce(Message message){
         System.out.println("Production du message... ");
         attendre_produire();
@@ -61,6 +65,11 @@ public class Producteur extends Thread {
             System.out.println("Message envoyé ! ");
         }
     }
+
+    /**
+     * Fonction pour recevoir les messages.
+     * @param jeton
+     */
     public  void sur_reception_de(Jeton jeton){
         temp = Math.min(nbmess-nbaut,jeton.getVal());
         nbaut += temp;
@@ -68,6 +77,10 @@ public class Producteur extends Thread {
         envoyer_a(outOSuccesseur,jeton);
         //System.out.println("*** Le jeton a été envoyé ****");
     }
+
+    /**
+     * fonction qui se charge d'envoyer les messages.
+     */
     public void facteur(){
         while(true){
             attendre_facteur();
@@ -80,6 +93,9 @@ public class Producteur extends Thread {
         }
     }
 
+    /**
+     * Attent que la nombre d'autorisation soit positif.
+     */
     public void attendre_facteur(){
         while(!(nbaut>0)){
             try {
@@ -128,7 +144,10 @@ public class Producteur extends Thread {
         }
     }
 
-
+    /**
+     * Runnable for Sur_receptio_de thread
+     * @return
+     */
     public Runnable callSRD(){
         return new Runnable() {
             @Override
@@ -164,12 +183,21 @@ public class Producteur extends Thread {
     }
 
 
-
+    /**
+     * Set the output and input of the token
+     *
+     * @param successeur
+     * @param predecesseur
+     */
     public void setJetonContext(ObjectOutputStream successeur,ObjectInputStream predecesseur){
         this.setSuccesseur(successeur);
         this.setPredecesseur(predecesseur);
     }
 
+    /**
+     * Verify is the neighbors context is ready.
+     * @return
+     */
     public boolean readyNeighbors(){
         if(outOSuccesseur== null || inOpredecesseur == null) return false;
         return true;
@@ -198,6 +226,10 @@ public class Producteur extends Thread {
         };
     }
 
+    /**
+     * Initialise le producteur et se connect au serveur du consommateur.
+     * @param consumerId
+     */
     public void initialize(int consumerId){
         //TODO : Faire un join
         if(!readyNeighbors()){
@@ -222,6 +254,10 @@ public class Producteur extends Thread {
         }
 
     }
+
+    /**
+     * correspond au menu du producteur.
+     */
     public void menu(){
         Scanner sc = new Scanner(System.in);
         String answer;
@@ -255,6 +291,11 @@ public class Producteur extends Thread {
 
     }
 
+    /**
+     * Write message for consumer.
+     * @param sc
+     * @return
+     */
     public synchronized Message writeMessage(Scanner sc){
         System.out.println("Write your message :  ");
         String res = sc.nextLine();

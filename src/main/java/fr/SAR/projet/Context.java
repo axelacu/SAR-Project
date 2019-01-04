@@ -89,6 +89,10 @@ public class Context {
         return (0 == id ? size - 1 : id - 1);
     }
 
+    /**
+     * Set the election context, pour Chang-Robert, 1: pour Lelann, 2: pour Franklin
+     * @param election
+     */
     public static void setElection(int election) {
         Context.election = election;
     }

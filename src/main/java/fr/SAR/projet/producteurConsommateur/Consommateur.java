@@ -180,6 +180,11 @@ public class Consommateur {
         };
     }
 
+    /**
+     * Permet d'envoyer un message un site
+     * @param outOSuccesseur
+     * @param content
+     */
     public void envoyer_a(ObjectOutputStream outOSuccesseur, Jeton content){
         try {
             outOSuccesseur.writeObject(content);
@@ -189,11 +194,19 @@ public class Consommateur {
         }
     }
 
+    /**
+     * Verifie si le context est pret.
+     * @return
+     */
     public boolean readyNeighbors(){
         if(outOSuccesseur== null || inOpredecesseur == null) return false;
         return true;
     }
 
+    /**
+     * Cette fonction permet d'initialiser le consommateur.
+     * @param id correspond à l'id du consommateur.
+     */
     public void initialize_Consumer(int id){ //Etablie les connexions entre le conso et chaque producteur
         ArrayList<ThreadProducteur> threadProducteurs = new ArrayList<>();
         try {
