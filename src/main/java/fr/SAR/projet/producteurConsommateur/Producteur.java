@@ -213,6 +213,14 @@ public class Producteur extends Thread {
 
         searchingConsumer(consumerId);
         menu();
+        thSRD.stop();
+        thFacteur.stop();
+        try {
+            consommateur.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
     public void menu(){
         Scanner sc = new Scanner(System.in);
@@ -243,6 +251,8 @@ public class Producteur extends Thread {
                 answer = sc.nextLine();
             }
         }while(!answer.equals("N") && !consommateur.isClosed());
+
+
     }
 
     public synchronized Message writeMessage(Scanner sc){

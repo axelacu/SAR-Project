@@ -172,7 +172,7 @@ public class ElectionCR {
     }
 
     public int initializeElection() {
-        System.out.println("*** L'election est en cours ***");
+        System.out.println("*** L'election de Chang et Robert est en cours ***");
         Thread srd = new Thread(callSRD());
         if (this.initiator) {
             Leader();

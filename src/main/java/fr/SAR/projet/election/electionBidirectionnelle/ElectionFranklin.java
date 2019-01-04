@@ -222,7 +222,7 @@ public class ElectionFranklin {
 
 
     public int initializeElectionFranklin(){
-        System.out.println("*** L'election est en cours ***");
+        System.out.println("*** L'election de Franklin est en cours ***");
         Thread srdp=new Thread(callSRDpredecessor());
         Thread srds=new Thread(callSRDsuccessor());
 
@@ -238,10 +238,13 @@ public class ElectionFranklin {
                 e.printStackTrace();
             }
 
-        }while(srdp.isAlive());
+        }while(srdp.isAlive() && srds.isAlive());
 
         if(srds.isAlive()){
-            srds.interrupt();
+            srds.stop();
+        }
+        if(srdp.isAlive()){
+            srdp.stop();
         }
         return this.chef;
     }

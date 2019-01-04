@@ -118,7 +118,7 @@ public class ElectionLelann {
 
 
     public int initialize(boolean participate){
-        System.out.println("*** L'election est en cours ***");
+        System.out.println("*** L'election de LeLann est en cours ***");
         Thread thSrd = new Thread(callSRD());
         thSrd.start();
         if(participate){

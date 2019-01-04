@@ -13,7 +13,7 @@ public class Context {
     private static int indexPort = 1;
     static String regex = ":";
     static int portConsumer = 4010;
-    static int election = 1;
+    static int election = 0;
 
     /**
      * Return the port that will be use for the server of consumer.

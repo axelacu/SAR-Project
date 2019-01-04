@@ -43,7 +43,7 @@ public class ThreadProducteur extends Thread{
 
                 } catch(Exception e){
                     System.out.println("Erreur dans l'attente d'un message");
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         };

@@ -4,7 +4,6 @@ import fr.SAR.projet.election.electionBidirectionnelle.ElectionFranklin;
 import fr.SAR.projet.election.electionUnidirectionelle.ElectionCR;
 import fr.SAR.projet.election.electionUnidirectionelle.ElectionLelann;
 import fr.SAR.projet.producteurConsommateur.Consommateur;
-import fr.SAR.projet.producteurConsommateur.Consommateur2;
 import fr.SAR.projet.producteurConsommateur.Producteur;
 
 import java.util.Scanner;
@@ -14,6 +13,8 @@ import java.util.Scanner;
  */
 public class App {
     static String[] context = new String[]{"192.168.56.1:4020", "192.168.56.1:4021", "192.168.56.1:4022"};
+    //0 : pour Chang-Robert, 1: pour Lelann, 2: pour Franklin
+    static int selection = 1;
 
     public static void main(String[] args) {
         launch();
@@ -54,7 +55,7 @@ public class App {
         String nickName;
         Context.setContext(context, ":");
         //0 : pour Chang-Robert, 1: pour Lelann, 2: pour Franklin
-        Context.setElection(1);
+        Context.setElection(selection);
         do{
             System.out.println("Give a nick name please : ");
             nickName = sc.nextLine();

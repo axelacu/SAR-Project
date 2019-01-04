@@ -96,7 +96,7 @@ public class Consommateur {
                 synchronized (monitorInc) {
                     synchronized (monitorNbMess) {
                         T[inc] = ((Message) toSend);
-                        System.out.println(T[inc].getMessage());
+                        //System.out.println(T[inc].getMessage());
                         inc = (inc + 1) % N;
                         this.NbMess++;
                     }
@@ -127,7 +127,7 @@ public class Consommateur {
         if (this.NbMess > 0) {
             synchronized (monitorNbMess) {
                 synchronized (monitorNbCell) {
-                    System.out.println("Je consomme le message:  ");
+                   // System.out.println("Je consomme le message:  ");
                     System.out.println(T[outc].getMessage());
                     if(T[outc].equals("Consommer please")){
                         //TODO: relancer l'election
@@ -195,6 +195,7 @@ public class Consommateur {
     }
 
     public void initialize_Consumer(int id){ //Etablie les connexions entre le conso et chaque producteur
+        ArrayList<ThreadProducteur> threadProducteurs = new ArrayList<>();
         try {
             if(!readyNeighbors()){
                 System.err.println("*** You can't You need to define your neighbors ***");
@@ -215,9 +216,13 @@ public class Consommateur {
                 Socket soc = serveur.ajoutClient();
                 ThreadProducteur threadProducteur=new ThreadProducteur(soc,"producteur"+i,this);
                 threadProducteur.start();
-
+                threadProducteurs.add(threadProducteur);
             }
-            System.out.println("Well Done; all connection etablished");
+            System.out.println("*** Well Done; all connection etablished ***");
+            for(ThreadProducteur th : threadProducteurs){
+                th.join();
+            }
+            serveur.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
