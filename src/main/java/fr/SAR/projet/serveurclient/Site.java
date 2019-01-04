@@ -1,5 +1,6 @@
-package fr.SAR.projet;
+package fr.SAR.projet.serveurclient;
 
+import fr.SAR.projet.Context;
 import fr.SAR.projet.serveurclient.Client;
 import fr.SAR.projet.serveurclient.Serveur;
 

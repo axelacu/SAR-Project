@@ -2,16 +2,10 @@ package fr.SAR.projet.election.electionBidirectionnelle;
 
 import static java.lang.Thread.sleep;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.net.Socket;
 
-import fr.SAR.projet.Site;
 import fr.SAR.projet.election.Etat;
 import fr.SAR.projet.message.Confirmation;
 import fr.SAR.projet.message.Requete;

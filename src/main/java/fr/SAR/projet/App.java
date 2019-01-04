@@ -5,6 +5,7 @@ import fr.SAR.projet.election.electionUnidirectionelle.ElectionCR;
 import fr.SAR.projet.election.electionUnidirectionelle.ElectionLelann;
 import fr.SAR.projet.producteurConsommateur.Consommateur;
 import fr.SAR.projet.producteurConsommateur.Producteur;
+import fr.SAR.projet.serveurclient.Site;
 
 import java.util.Scanner;
 
