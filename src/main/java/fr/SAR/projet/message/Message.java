@@ -1,7 +1,5 @@
 package fr.SAR.projet.message;
 
-import java.io.Serializable;
-
 public class Message extends ToSend {
 
     private String message;

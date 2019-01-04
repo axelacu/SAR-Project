@@ -1,7 +1,6 @@
 package fr.SAR.projet.producteurConsommateur;
 
 import fr.SAR.projet.message.Message;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;

@@ -1,6 +1,5 @@
 package fr.SAR.projet.message;
 
-
 public class Jeton extends ToSend {
 
     private int val;

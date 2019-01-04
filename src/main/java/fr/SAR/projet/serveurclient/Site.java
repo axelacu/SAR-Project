@@ -1,9 +1,6 @@
 package fr.SAR.projet.serveurclient;
 
 import fr.SAR.projet.Context;
-import fr.SAR.projet.serveurclient.Client;
-import fr.SAR.projet.serveurclient.Serveur;
-
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
