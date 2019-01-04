@@ -3,15 +3,10 @@ package fr.SAR.projet.message;
 public class Requete extends ToSend {
 	
 	private int siteId;
-	private int sender;
+	private int precedent;
 	
 	public Requete(int siteId) {
 		this.siteId = siteId;
-	}
-
-	public Requete(int siteId, int sender){
-		this.siteId = siteId;
-		this.sender = sender;
 	}
 	
 	public int getSiteId() {
@@ -22,7 +17,11 @@ public class Requete extends ToSend {
 		this.siteId = siteId;
 	}
 
-	public int getSender(){
-		return sender;
+	public int getPrecedent() {
+		return precedent;
+	}
+
+	public void setPrecedent(int precedent) {
+		this.precedent = precedent;
 	}
 }
