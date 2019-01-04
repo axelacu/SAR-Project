@@ -3,7 +3,7 @@ package fr.SAR.projet;
 import fr.SAR.projet.election.electionBidirectionnelle.ElectionFranklin;
 import fr.SAR.projet.election.electionUnidirectionelle.ElectionCR;
 import fr.SAR.projet.election.electionUnidirectionelle.ElectionLelann;
-import fr.SAR.projet.producteurConsommateur.Consommateur;
+import fr.SAR.projet.producteurConsommateur.Consommateur2;
 import fr.SAR.projet.producteurConsommateur.Producteur;
 
 import java.util.Scanner;
@@ -79,7 +79,7 @@ public class App {
                 site.setConsumer(false);
             }
             if (site.isConsumer()) {
-                Consommateur consommateur = new Consommateur(3);
+                Consommateur2 consommateur = new Consommateur2(3);
                 consommateur.setJetonContext(site.getoOutSucessor(), site.getoInPredecessor());
                 consommateur.initialize_Consumer(leader);
             } else {

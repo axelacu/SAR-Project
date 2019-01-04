@@ -7,19 +7,19 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class ThreadProducteur extends Thread{
+public class ThreadProducteur2 extends Thread{
 
     Socket se;
     String name;
     ObjectInputStream in;
     ObjectOutputStream out;
-    Consommateur consommateur;
+    Consommateur2 consommateur;
 
     Etat etat;
     final public Object monitorEtat = new Object();
     Thread threadReceiveMessage;
 
-    public ThreadProducteur(Socket socket,String name,Consommateur consommateur){
+    public ThreadProducteur2(Socket socket, String name, Consommateur2 consommateur){
         try {
             this.se = socket;
             this.name = name;

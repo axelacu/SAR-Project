@@ -15,12 +15,12 @@ import fr.SAR.projet.message.ToSend;
 import static java.lang.Thread.sleep;
 
 
-public class Consommateur {
+public class Consommateur2 {
 
     /**
      * list for all prod
      */
-    ArrayList<ThreadProducteur> producteurs=new ArrayList<>();
+    ArrayList<ThreadProducteur2> producteurs=new ArrayList<>();
 
     int compteur=-1;
     /**
@@ -89,7 +89,7 @@ public class Consommateur {
     }
 
 
-    public Consommateur(int N){
+    public Consommateur2(int N){
         try {
             this.N = N;
             T = new Message[N];
@@ -130,14 +130,14 @@ public class Consommateur {
                             this.NbCell = 0;
                             this.compteur++;
                             System.out.println(compteur);
-                            if (this.compteur == 5) {
+                            if (this.compteur == 30) {
                                 tocontinue = demandToContinue();
                             }
                             if (tocontinue == false) {
                                 Etat etatnew = Etat.termine;
 
                                 this.etat = Etat.termine;
-                                for (ThreadProducteur threadProducteur : producteurs) {
+                                for (ThreadProducteur2 threadProducteur : producteurs) {
                                     threadProducteur.setEtat(etatnew);
                                 }
                             } else {
@@ -205,6 +205,7 @@ public class Consommateur {
                                 if (object instanceof Jeton) {
                                     Jeton jeton = (Jeton) object;
                                     Sur_Reception_De(jeton);
+                                    sleep(1000);
                                 }
                             }
 
@@ -270,13 +271,13 @@ public class Consommateur {
            for (int i = 0; i < Context.getContext().length; i++) {
                if(i==id) continue;
                Socket soc = serveur.ajoutClient();
-               ThreadProducteur threadProducteur=new ThreadProducteur(soc,"producteur"+i,this);
+               ThreadProducteur2 threadProducteur=new ThreadProducteur2(soc,"producteur"+i,this);
                threadProducteur.start();
                producteurs.add(threadProducteur);
 
             }
            System.out.println("Well Done; all connection etablished");
-           for(ThreadProducteur threadProducteur:producteurs){
+           for(ThreadProducteur2 threadProducteur:producteurs){
                threadProducteur.join();
            }
 
