@@ -1,4 +1,10 @@
-*** Ceci correspond au prohet de Axel Acuna, Shirel Matti, Corentin Fanton, Lisa Aït-Mouloud et Samuel Arzur. ***
-Il a été fait sous forme d'un Maven pour faciliter la lecture dans le IDE tel que / NetBin, Eclipe, IntelliJ,etc.
+*** Ceci correspond au prohet de Axel Acuna, Shirel Matti, Corentin Fanton, Lisa AÃ¯t-Mouloud et Samuel Arzur. ***
+Il a Ã©tÃ© fait sous forme d'un Maven pour faciliter la lecture dans le IDE tel que / NetBin, Eclipe, IntelliJ,etc.
 
-rappels des commandes : "mvn package", "mvn compile" et "java -cp .\target\classes
+rappels des commandes : "mvn package", "mvn compile" et "java -cp target/classes/ fr.SAR.projet.App" //Main class
+
+Le main est dans App.
+Il est imperatif de definir le context du App.
+ln 17 : static String[] context = new String[]{"Vos ips"};
+
+Bon execution !
