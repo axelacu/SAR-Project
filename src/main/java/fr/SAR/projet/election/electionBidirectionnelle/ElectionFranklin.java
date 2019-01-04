@@ -231,14 +231,18 @@ public class ElectionFranklin {
         if (this.initiator){
             leader();
         }
-        try{
-            // srdp.join();
-            //srds.join();
-        }catch (Exception e){
-            System.out.println("Probleme Leader");
-            e.printStackTrace();
-        }
+        do{
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
+        }while(srdp.isAlive());
+
+        if(srds.isAlive()){
+            srds.interrupt();
+        }
         return this.chef;
     }
 
