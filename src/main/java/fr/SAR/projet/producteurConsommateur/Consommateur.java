@@ -103,7 +103,7 @@ public class Consommateur {
                 synchronized (monitorInc) {
                     synchronized (monitorNbMess) {
                         T[inc] = ((Message) toSend);
-                        System.out.println(T[inc].getMessage());
+                        //System.out.println(T[inc].getMessage());
                         inc = (inc + 1) % N;
                         this.NbMess++;
                     }

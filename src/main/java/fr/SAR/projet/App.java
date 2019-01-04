@@ -1,8 +1,8 @@
 package fr.SAR.projet;
 
-import fr.SAR.projet.ElectionUnidirectionelle.Election;
-import fr.SAR.projet.electionFrancklin.Franklin;
-import fr.SAR.projet.electionLelan.ElectionLelann;
+import fr.SAR.projet.election.electionBidirectionnelle.ElectionFranklin;
+import fr.SAR.projet.election.electionUnidirectionelle.ElectionCR;
+import fr.SAR.projet.election.electionUnidirectionelle.ElectionLelann;
 import fr.SAR.projet.producteurConsommateur.Consommateur;
 import fr.SAR.projet.producteurConsommateur.Producteur;
 
@@ -12,7 +12,7 @@ import java.util.Scanner;
  * Main application
  */
 public class App {
-    static String[] context = new String[]{"25.46.150.102:4020", "25.46.130.120:4020", "25.84.72.231:4020"};
+    static String[] context = new String[]{"192.168.56.1:4021", "192.168.56.1:4020", "192.168.56.1:4022"};
 
     public static void main(String[] args) {
         launch();
@@ -23,7 +23,7 @@ public class App {
         System.out.println("*** L'election a été lancée ****");
         switch (Context.election){
             case 0:
-                Election election = new Election(site.getId(),site.getOutSuccessor(),site.getInPredecessor(),participate);
+                ElectionCR election = new ElectionCR(site.getId(),site.getOutSuccessor(),site.getInPredecessor(),participate);
                 elect = election.initializeElection();
                 System.out.println("Le chef a été elu il correspond a : " + elect );
                 break;
@@ -33,6 +33,11 @@ public class App {
                 System.out.println("Le chef a été elu il correspond a : " + elect);
                 break;
             case 2:
+                int idPred = Context.idPredecesseur(site.getId()); // retourne id du site precedent     getoInSucessor()/getoInSuccesor()
+                ElectionFranklin electionFranklin;
+                electionFranklin = new ElectionFranklin(site.getId(),idPred,site.getoOutSucessor(), site.getoInPredecessor(), site.getoInSuccesor(), site.getoOutPredecessor(), participate);
+                elect = electionFranklin.initializeElectionFranklin();
+                System.out.println("Le chef a été elu il correspond a : " + elect);
 
                 break;
         }
@@ -47,6 +52,8 @@ public class App {
         int id = Integer.parseInt(sc.nextLine());
         String nickName;
         Context.setContext(context, ":");
+        //0 : pour Chang-Robert, 1: pour Lelann, 2: pour Franklin
+        Context.setElection(2);
         do{
             System.out.println("Give a nick name please : ");
             nickName = sc.nextLine();

@@ -1,4 +1,4 @@
-package fr.SAR.projet.ElectionUnidirectionelle;
+package fr.SAR.projet.election;
 
 public enum Etat {
     Repos,
