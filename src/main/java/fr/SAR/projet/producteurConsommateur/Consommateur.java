@@ -6,6 +6,7 @@ import java.io.*;
 import java.io.IOException;
 import java.net.Socket;
 import fr.SAR.projet.Context;
+import fr.SAR.projet.election.Etat;
 import fr.SAR.projet.serveurclient.Serveur;
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Message;
@@ -15,8 +16,17 @@ import static java.lang.Thread.sleep;
 
 
 public class Consommateur {
-    //TODO: à voir si on a besoin de la garder
-    ArrayList<ObjectOutputStream> producteurs=new ArrayList<>();
+
+    /**
+     * list for all prod
+     */
+    ArrayList<ThreadProducteur> producteurs=new ArrayList<>();
+
+    int compteur=-1;
+    /**
+     * for the second election
+     */
+    Etat etat;
 
     /**
      * Vector of messages
@@ -54,6 +64,7 @@ public class Consommateur {
     final public  Object monitorNbMess= new Object();
     final public  Object monitorJeton=new Object();
     final public Object monitorNbCell=new Object();
+    final public Object monitorEtat=new Object();
 
 
 
@@ -82,6 +93,7 @@ public class Consommateur {
         try {
             this.N = N;
             T = new Message[N];
+            etat=Etat.en_cours;
         }catch(Exception e){
             System.out.println("Error consumer");
             e.printStackTrace();
@@ -98,12 +110,12 @@ public class Consommateur {
 
 
     public  boolean Sur_Reception_De(ToSend toSend){
+        boolean tocontinue=true;
         try {
             if (toSend instanceof Message) {
                 synchronized (monitorInc) {
                     synchronized (monitorNbMess) {
                         T[inc] = ((Message) toSend);
-                        //System.out.println(T[inc].getMessage());
                         inc = (inc + 1) % N;
                         this.NbMess++;
                     }
@@ -112,13 +124,28 @@ public class Consommateur {
             if (toSend instanceof Jeton) {
                 synchronized (monitorJeton) {
                     synchronized (monitorNbCell) {
-                        Jeton jeton = (Jeton) toSend;
-                        jeton.setVal(jeton.getVal() + this.NbCell);
-                        this.NbCell=0;
-                        envoyer_a(outOSuccesseur, jeton);
+
+                            Jeton jeton = (Jeton) toSend;
+                            jeton.setVal(jeton.getVal() + this.NbCell);
+                            this.NbCell = 0;
+                            this.compteur++;
+                            System.out.println(compteur);
+                            if (this.compteur == 5) {
+                                tocontinue = demandToContinue();
+                            }
+                            if (tocontinue == false) {
+                                Etat etatnew = Etat.termine;
+
+                                this.etat = Etat.termine;
+                                for (ThreadProducteur threadProducteur : producteurs) {
+                                    threadProducteur.setEtat(etatnew);
+                                }
+                            } else {
+                                envoyer_a(outOSuccesseur, jeton);
+                            }
+
                     }
                 }
-
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -126,6 +153,20 @@ public class Consommateur {
         }
         return true;
     }
+
+
+    public boolean demandToContinue(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Avez vous d'autres chose à écouter? ");
+        String rep=sc.nextLine();
+        if(rep.equals("Y")){
+            return true;
+        }else {
+            return false;
+        }
+
+    }
+
 
 
 
@@ -155,15 +196,19 @@ public class Consommateur {
             @Override
             public void run() {
                 try {
-                    while(true){
-                        Object object = inOpredecesseur.readObject();
-                        if(object!=null){
-                            if(object instanceof Jeton) {
-                                Jeton jeton = (Jeton) object;
-                                Sur_Reception_De(jeton);
+
+                    while(etat==Etat.en_cours){
+                        synchronized (monitorEtat) {
+                            if (etat == Etat.termine) continue;
+                            Object object = inOpredecesseur.readObject();
+                            if (object != null) {
+                                if (object instanceof Jeton) {
+                                    Jeton jeton = (Jeton) object;
+                                    Sur_Reception_De(jeton);
+                                }
                             }
+
                         }
-                        sleep(1000);
                     }
                 }catch (Exception e){
                     System.err.println(e);
@@ -176,13 +221,16 @@ public class Consommateur {
         return new Runnable() {
             @Override
             public void run() {
-                while(true) {
-                    consommer();
-                    try {
-                        sleep(1000);
-                    }catch(Exception e){
-                        e.printStackTrace();
-                        System.out.println("probleme consommateur");
+                while(etat==Etat.en_cours) {
+                    synchronized (monitorEtat) {
+                        if (etat == etat.termine) continue;
+                        ;
+                        consommer();
+                        try {
+                            sleep(1000);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -224,9 +272,17 @@ public class Consommateur {
                Socket soc = serveur.ajoutClient();
                ThreadProducteur threadProducteur=new ThreadProducteur(soc,"producteur"+i,this);
                threadProducteur.start();
+               producteurs.add(threadProducteur);
 
             }
            System.out.println("Well Done; all connection etablished");
+           for(ThreadProducteur threadProducteur:producteurs){
+               threadProducteur.join();
+           }
+
+           System.out.println("J'ai terminer d'etre le consommateur");
+           serveur.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

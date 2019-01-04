@@ -1,6 +1,7 @@
 package fr.SAR.projet.electionLelan;
 
-import fr.SAR.projet.ElectionUnidirectionelle.Etat;
+
+import fr.SAR.projet.election.Etat;
 import fr.SAR.projet.message.Confirmation;
 import fr.SAR.projet.message.Jeton;
 import fr.SAR.projet.message.Requete;
