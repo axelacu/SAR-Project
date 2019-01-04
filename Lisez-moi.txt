@@ -1,0 +1,4 @@
+*** Ceci correspond au prohet de Axel Acuna, Shirel Matti, Corentin Fanton, Lisa Aït-Mouloud et Samuel Arzur. ***
+Il a été fait sous forme d'un Maven pour faciliter la lecture dans le IDE tel que / NetBin, Eclipe, IntelliJ,etc.
+
+rappels des commandes : "mvn package", "mvn compile" et "java -cp .\target\classes
