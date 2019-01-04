@@ -15,7 +15,7 @@ public class App {
     static String[] context = new String[]{"25.46.130.120:4020", "225.84.72.231:4020", "25.46.150.102:4020","25.57.89.188:4020"};
     //static String[] context = new String[]{"192.168.56.1:4020", "192.168.56.1:4021", "192.168.56.1:4022"};
     //0 : pour Chang-Robert, 1: pour Lelann, 2: pour Franklin
-    static int selection = 0;
+    static int selection = 1;
 
     public static void main(String[] args) {
         launch();
@@ -97,8 +97,8 @@ public class App {
 
         }while(!rep.equals("N"));
 
-
         site.shutdownIn();
         site.close();
+        System.exit(0);
     }
 }

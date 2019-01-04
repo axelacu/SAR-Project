@@ -108,7 +108,7 @@ public class ElectionCR {
                         //System.out.println("JE suis ici mon etat va se terminer");
                         etat = etat.termine;
                         forWait.notify();
-                        System.out.println(etat);
+                        //System.out.println(etat);
                         envoyer_a(successor, new Confirmation(this.id));
                     }
                 }
