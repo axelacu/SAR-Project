@@ -33,9 +33,7 @@ public class App {
                 System.out.println("Le chef a été elu il correspond a : " + elect);
                 break;
             case 2:
-                Franklin franklin = new Franklin(site.getId(),site.getoOutSucessor(),site.getoInPredecessor(),
-                                        site.getoOutPredecessor(),site.getoInSuccesor());
-                elect = franklin.initialize(participate);
+
                 break;
         }
         return elect;
