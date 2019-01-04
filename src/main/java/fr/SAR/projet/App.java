@@ -3,6 +3,7 @@ package fr.SAR.projet;
 import fr.SAR.projet.election.electionBidirectionnelle.ElectionFranklin;
 import fr.SAR.projet.election.electionUnidirectionelle.ElectionCR;
 import fr.SAR.projet.election.electionUnidirectionelle.ElectionLelann;
+import fr.SAR.projet.producteurConsommateur.Consommateur;
 import fr.SAR.projet.producteurConsommateur.Consommateur2;
 import fr.SAR.projet.producteurConsommateur.Producteur;
 
@@ -12,7 +13,7 @@ import java.util.Scanner;
  * Main application
  */
 public class App {
-    static String[] context = new String[]{"192.168.56.1:4020", "192.168.56.1:4021", "192.168.56.1:4022"};
+    static String[] context = new String[]{"25.46.150.102:4020", "25.46.130.120:4020"};
 
     public static void main(String[] args) {
         launch();
@@ -79,7 +80,7 @@ public class App {
                 site.setConsumer(false);
             }
             if (site.isConsumer()) {
-                Consommateur2 consommateur = new Consommateur2(3);
+                Consommateur consommateur = new Consommateur(3);
                 consommateur.setJetonContext(site.getoOutSucessor(), site.getoInPredecessor());
                 consommateur.initialize_Consumer(leader);
             } else {
