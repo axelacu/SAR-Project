@@ -83,4 +83,9 @@ public class Client extends Thread {
             e.printStackTrace();
         }
     }
+
+    public boolean isConnect(){
+        return sserv.isClosed();
+
+    }
 }

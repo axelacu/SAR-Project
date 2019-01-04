@@ -26,6 +26,7 @@ public class Producteur extends Thread {
     public ObjectOutputStream outOSuccesseur;
     public ObjectInputStream inOpredecesseur;
 
+    Client client;
     private final Object monitorTableau = new Object();
     private final Object monitorAnswer = new Object();
     private final Object monitorSender = new Object();
@@ -162,33 +163,6 @@ public class Producteur extends Thread {
         };
     }
 
-    public static void main(String[] args){
-
-        int port=4020;
-
-        try {
-            InetAddress test = InetAddress.getByName("25.46.150.102");// ne fait pas partie du tp
-            InetSocketAddress val = new InetSocketAddress(test,port);//ne fait pas partie du TP
-            ServerSocket se = new ServerSocket();
-            se.bind(val); // ne fait pas partie du tP.
-
-            System.out.println("Le serveur est à l'écoute " + "dans l'InetAdress suivante : " + se.getInetAddress());
-            System.out.println("Le serveur est à l'ecoute");
-            Socket socket = se.accept();
-            System.out.println(socket.getInetAddress());
-            System.out.println("Connexion accepte");
-            Producteur producteur = new Producteur(10);
-            //producteur.setSuccesseur(socket.getOutputStream());
-            //producteur.setPredecesseur(socket.getInputStream());
-            Thread th = new Thread(producteur.callSRD());
-            th.start();
-            while (true){
-            }
-        } catch (Exception e) {
-            System.out.println("laa");
-            e.printStackTrace();
-        }
-    }
 
 
     public void setJetonContext(ObjectOutputStream successeur,ObjectInputStream predecesseur){
@@ -244,6 +218,9 @@ public class Producteur extends Thread {
         Scanner sc = new Scanner(System.in);
         String answer;
         do{
+            if(consommateur.isClosed()){
+                break;
+            }
             System.out.println("Do you want to produce a message ? Y or N ");
             System.out.print("Answer : ");
             answer = sc.nextLine();
@@ -265,7 +242,7 @@ public class Producteur extends Thread {
                 System.out.println("Do you want to continue ? Y or N");
                 answer = sc.nextLine();
             }
-        }while(!answer.equals("N"));
+        }while(!answer.equals("N") && !consommateur.isClosed());
     }
 
     public synchronized Message writeMessage(Scanner sc){
