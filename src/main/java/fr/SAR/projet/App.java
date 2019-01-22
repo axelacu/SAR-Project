@@ -13,8 +13,9 @@ import java.util.Scanner;
  * Main application
  */
 public class App {
-    static String[] context = new String[]{"25.46.130.120:4020", "225.84.72.231:4020", "25.46.150.102:4020","25.57.89.188:4020"};
-    //static String[] context = new String[]{"192.168.56.1:4020", "192.168.56.1:4021", "192.168.56.1:4022"};
+    static String[] context = new String[]{/*Shirel*/"25.46.150.102:4020", /*Samuel*/"25.46.60.82:4020", /*Lisa*/"25.84.72.231:4020",/*Axel*/"25.46.130.120:4020"};
+
+
     //0 : pour Chang-Robert, 1: pour Lelann, 2: pour Franklin
     static int selection = 1;
 
